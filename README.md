@@ -10,12 +10,13 @@
 > * cassandra
 > * kafka
 > * zookeeper
+> * flink
+> * storm
+> * scala==2.12.8
 ### 可部署的依赖性软件
-> * jdk==1.8。*
-> * scala
-> * 多对多免密钥登录
+> * jdk==1.8.0_211
+> * 多对多免密钥登录(now is bad)
 > * 多对多增加hosts
-> * 允许root进行ssh(没什么卵用)
 ## 配置文件
 在passwd.ini文件里修改各个软件的服务器、配置等参数，多软件不冲突
 ## 使用方式
