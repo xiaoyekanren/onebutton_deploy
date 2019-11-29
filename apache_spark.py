@@ -18,7 +18,7 @@ spark_folder = cf.get('spark', 'spark_folder')
 master_ip = cf.get('spark', 'master_ip')
 master_public_ip = cf.get('spark', 'master_public_ip')
 slaves = cf.get('spark', 'slaves').split(',')
-SPARK_WORK_DIR = cf.get('spark', 'SPARK_WORK_DIR')
+SPARK_WORKER_DIR = cf.get('spark', 'SPARK_WORKER_DIR')
 # 需要拼接的字符串
 spark_upload_file_path = os.path.join('/home', env.user, 'spark.tar.gz').replace('\\', '/')
 spark_home = os.path.join('/home', env.user, spark_folder).replace('\\', '/')
@@ -40,9 +40,9 @@ def install():
     run('tar -zxvf spark.tar.gz')
     #  && rm -f spark.tar.gz
 
-    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建SPARK_WORK_DIR文件夹并授权给spark所属用户
-        sudo('mkdir -p ' + SPARK_WORK_DIR)
-        sudo('chown -R ' + env.user + ':' + env.user + ' ' + SPARK_WORK_DIR)
+    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建SPARK_WORKER_DIR文件夹并授权给spark所属用户
+        sudo('mkdir -p ' + SPARK_WORKER_DIR)
+        sudo('chown -R ' + env.user + ':' + env.user + ' ' + SPARK_WORKER_DIR)
 
     # 开始配置spark
     with cd(spark_config_folder):  # 进入配置文件目录
@@ -59,8 +59,8 @@ def install():
         run("echo 'SPARK_HOME=" + spark_home + "' >> spark-env.sh")
         # JAVA_HOME
         run("echo 'JAVA_HOME=" + java_home + "' >> spark-env.sh")
-        # SPARK_WORK_DIR
-        run("echo 'SPARK_WORK_DIR=" + SPARK_WORK_DIR + "' >> spark-env.sh")
+        # SPARK_WORKER_DIR
+        run("echo 'SPARK_WORKER_DIR=" + SPARK_WORKER_DIR + "' >> spark-env.sh")
         # SPARK_WORKER_OPTS
         spark_work_opts = '"-Dspark.worker.cleanup.enabled=true -Dspark.worker.cleanup.interval=1800 -Dspark.worker.cleanup.appDataTtl=3600" '
         run("echo 'SPARK_WORKER_OPTS=" + spark_work_opts + "' >> spark-env.sh")

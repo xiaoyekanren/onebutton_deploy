@@ -101,7 +101,7 @@ def install():
         run("sed -i '$i\</property>' hdfs-site.xml")
 
         run("sed -i '$i\<property>' hdfs-site.xml")
-        run("sed -i '$i\<name>dfs.webhdfs.enabled</name>' hdfs-site.xml")  # 打开这个，否则访问50070的web浏览数据时可能会报错
+        run("sed -i '$i\<name>dfs.webhdfs.enabled</name>' hdfs-site.xml")  # 打开这个，否则访问50070的web浏览数据时会报错
         run("sed -i '$i\<value>true</value>' hdfs-site.xml")
         run("sed -i '$i\</property>' hdfs-site.xml")
         # 写mapred-site.xml
@@ -158,11 +158,6 @@ def install():
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.resource-tracker.address</name>' yarn-site.xml")  # 不知道是个啥子。。官方没解释
-        run("sed -i '$i\<value>" + master_ip + ":8031</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
         run("sed -i '$i\<name>yarn.resourcemanager.admin.address</name>' yarn-site.xml")  # The address of the RM admin interface.RM管理界面的地址
         run("sed -i '$i\<value>" + master_ip + ":8033</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
@@ -175,11 +170,6 @@ def install():
         run("sed -i '$i\<property>' yarn-site.xml")
         run("sed -i '$i\<name>yarn.nodemanager.aux-services</name>' yarn-site.xml")  # 貌似是yarn任务的命名方式？？？
         run("sed -i '$i\<value>mapreduce_shuffle</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>' yarn-site.xml")  # 不知道是个啥子。。官方没解释
-        run("sed -i '$i\<value>org.apache.hadoop.mapred.ShuffleHandler</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
@@ -220,11 +210,6 @@ def install():
         run("sed -i '$i\<property>' yarn-site.xml")
         run("sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
         run("sed -i '$i\<value>4</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.app.mapreduce.am.command-opts</name>' yarn-site.xml")  # ???不知道..
-        run("sed -i '$i\<value>-Xmx1536m</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         if env.host == master_ip:  # 格式化namenode，只格式化master节点

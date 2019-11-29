@@ -134,7 +134,3 @@ def modify_system():
         sudo('sysctl -w vm.max_map_count=131072')  # 修改mmap file 线程数
         sudo('echo ' + "'vm.max_map_count=131072'" + ' >> /etc/sysctl.conf')
         # sudo('ulimit -a')  # 查看所有限制值
-
-
-def test():
-    print "hello world"
