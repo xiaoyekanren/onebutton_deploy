@@ -20,9 +20,9 @@ hostsum = len(env.hosts)
 def install():
     run('rm -rf ~/.ssh/id_rsa*')  # 删除已有的公钥私钥
     run('ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""')  # 生成公钥新的公钥私钥
+    with settings(user=sudouser, password=sudouser_passwd):  # 安装sshpass
+        sudo('apt install sshpass -y')
     if env.host == env.hosts[-1]:  # 即在最后一个主机运行的时候，此时全部主机已经生成了id_rsa，通过scp将全部公钥拿到最后这个主机上，生成authorized_keys文件，并scp传到其他全部主机上
-        # with settings(user=sudouser, password=sudouser_passwd):  # 安装sshpass
-        #     sudo('apt install sshpass -y')
         i = 0
         run('echo > ~/.ssh/authorized_keys')  # 创建或清空authorized_keys
         while i < hostsum:  # 通过scp将全部公钥拿到最后这个主机上，全部存入authorized_keys文件，将传过来的文件删除
