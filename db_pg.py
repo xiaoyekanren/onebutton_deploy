@@ -50,7 +50,6 @@ def install():
     # 修改默认参数
     with cd(data_path):
         run('sed -i "s:max_connections = 100:max_connections = ' + max_connections + ':g" postgresql.conf')
-        # run('sed -i "s:localhost:*:g" postgresql.conf')
         run('sed -i "s/#listen_addresses =.*/listen_addresses =' + "'" +  '*'  +"'" + '/g" postgresql.conf')
         run('sed -i "s:#port = 5432:port = 5432:g" postgresql.conf')
         run('echo "host    all             all             0.0.0.0/0               trust" >> pg_hba.conf')
@@ -68,7 +67,7 @@ def install():
     # 杀了PG
     with settings(warn_only=True):
         run("ps -ef|grep 'postgres'|awk '{print $2}'|xargs kill -9;echo 'already killed'")
-    # 输出结果,输出host必须带",".join(),否则会显示[u]
+    # 输出结果,输出host类型是list必须带",".join(),否则会显示[u]
     print '--------------------------------------\nfinish install pg\n'
     print 'host is %s,\npg user is %s,\npassword is %s\n' % (",".join(env.hosts), superuser, superuser_passwd)
     print '--------------------------------------\nstart way:\nfab -f db_pg.py start'
