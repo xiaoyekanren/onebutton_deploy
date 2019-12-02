@@ -18,7 +18,7 @@ spark_folder = cf.get('spark', 'spark_folder')
 master_ip = cf.get('spark', 'master_ip')
 master_public_ip = cf.get('spark', 'master_public_ip')
 slaves = cf.get('spark', 'slaves').split(',')
-SPARK_WORKER_DIR = cf.get('spark', 'SPARK_WORKER_DIR')
+SPARK_WORKER_DIR = cf.get('spark', 'spark_worker_dir')
 # 需要拼接的字符串
 spark_upload_file_path = os.path.join('/home', env.user, 'spark.tar.gz').replace('\\', '/')
 spark_home = os.path.join('/home', env.user, spark_folder).replace('\\', '/')
