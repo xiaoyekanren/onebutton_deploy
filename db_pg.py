@@ -25,9 +25,6 @@ pg_upload_file_path = os.path.join('/home', env.user, 'pg.tar.gz').replace('\\',
 pg_home = os.path.join(install_path, 'pgsql').replace('\\', '/')
 
 
-# 依赖
-
-
 # 安装
 def install():
     if env.user == 'root':
