@@ -5,23 +5,23 @@
 > * fabric==1.14.1
 ## 部署说明
 ### 可部署软件
-> * hadoop
-> * spark
-> * cassandra
-> * kafka
-> * zookeeper
-> * flink
-> * storm
-> * scala==2.12.8
+> * cassandra==3.0.18
+> * flink==1.7.2
+> * hadoop>=2.7.7 && <=2.8.5
+> * kafka==2.12-2.3.0
+> * spark==2.2.3
+> * storm==1.2.3
+> * zookeeper==3.4.13
+> * postgresql==10.10-2
 ### 可部署的依赖性软件
-> * jdk==1.8.0_211
-> * 多对多免密钥登录(now is bad)
+> * scala==2.12.8
 > * 多对多增加hosts
+> * jdk==1.8.*
+> * 多对多免密钥登录
 ## 配置文件
 在passwd.ini文件里修改各个软件的服务器、配置等参数，多软件不冲突
 ## 使用方式
 例如：
-
 ``` shell
 fab -f apache_cassandra.py install
 使用 -w 可跳过失败

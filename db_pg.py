@@ -34,8 +34,8 @@ def install():
         print ("can't install by root")
         exit()
     # 上传
-    # put(pg_local_file, pg_upload_file_path)
-    run('wget -O pg.tar.gz https://cloud.tsinghua.edu.cn/f/f9aefda2c5d0428fa044/?dl=1')
+    put(pg_local_file, pg_upload_file_path)
+    # run('wget -O pg.tar.gz https://cloud.tsinghua.edu.cn/f/f9aefda2c5d0428fa044/?dl=1')
     # 解压&删除
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建pg_WORKER_DIR文件夹并授权给pg所属用户
         sudo('mkdir -p ' + pg_home)
