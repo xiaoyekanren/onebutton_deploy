@@ -49,7 +49,10 @@ def install():
 def start():
     if env.host == master_ip:
         with cd(flink_home):
-            run('sbin/start-cluster.sh')
+            with settings(prompts={
+                'Are you sure you want to continue connecting (yes/no)? ': 'yes'
+            }):
+                run('sbin/start-cluster.sh')
 
 
 # stop
