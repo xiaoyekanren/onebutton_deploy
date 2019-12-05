@@ -72,7 +72,10 @@ def install():
 def start():
     with cd(spark_home):
         if env.host == master_public_ip:
-            run('sbin/start-all.sh')
+            with settings(prompts={
+                'Are you sure you want to continue connecting (yes/no)? ': 'yes'
+            }):
+                run('sbin/start-all.sh')
 
 
 def stop():

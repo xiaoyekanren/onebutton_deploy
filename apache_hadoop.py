@@ -45,7 +45,8 @@ def install():
     # 修改配置文件
     with cd(hadoop_config_folder):
         # hadoop-env.sh
-        run("sed -i 's:export JAVA_HOME=.*:export JAVA_HOME=" + java_home + ":g' hadoop-env.sh")  # 修改hadoop-env.sh的jdk路径
+        run(
+            "sed -i 's:export JAVA_HOME=.*:export JAVA_HOME=" + java_home + ":g' hadoop-env.sh")  # 修改hadoop-env.sh的jdk路径
         # slaves
         run("cat /dev/null > slaves")  # 清空
         for slave in slaves:
@@ -53,7 +54,8 @@ def install():
         # core-site.xml
         # https://hadoop.apache.org/docs/r2.7.7/hadoop-project-dist/hadoop-common/core-default.xml
         run("sed -i '$i\<property>' core-site.xml")
-        run("sed -i '$i\<name>hadoop.tmp.dir</name>' core-site.xml")  # A base for other temporary directories.其他临时目录的基础，本脚本除了数据目录外未配置其他临时目录，若不配置数据目录则数据目录会在此目录下
+        run(
+            "sed -i '$i\<name>hadoop.tmp.dir</name>' core-site.xml")  # A base for other temporary directories.其他临时目录的基础，本脚本除了数据目录外未配置其他临时目录，若不配置数据目录则数据目录会在此目录下
         run("sed -i '$i\<value>" + hadoop_home + '/tmp' + "</value>' core-site.xml ")
         run("sed -i '$i\</property>' core-site.xml")
 
@@ -63,7 +65,8 @@ def install():
         run("sed -i '$i\</property>' core-site.xml")
 
         run("sed -i '$i\<property>' core-site.xml")
-        run("sed -i '$i\<name>hadoop.proxyuser." + env.user + ".hosts</name>' core-site.xml")  # 配置访问用户的代理用户是env.user，其他程序调用hdfs的时候需要
+        run(
+            "sed -i '$i\<name>hadoop.proxyuser." + env.user + ".hosts</name>' core-site.xml")  # 配置访问用户的代理用户是env.user，其他程序调用hdfs的时候需要
         run("sed -i '$i\<value>*</value>' core-site.xml")
         run("sed -i '$i\</property>' core-site.xml")
 
@@ -96,7 +99,8 @@ def install():
         run("sed -i '$i\</property>' hdfs-site.xml")
 
         run("sed -i '$i\<property>' hdfs-site.xml")
-        run("sed -i '$i\<name>dfs.permissions</name>' hdfs-site.xml")  # hdfs的权限验证，没有特殊要求关闭即可，这个地方如果开启会造成除env.user外的用户访问hdfs会没有权限
+        run(
+            "sed -i '$i\<name>dfs.permissions</name>' hdfs-site.xml")  # hdfs的权限验证，没有特殊要求关闭即可，这个地方如果开启会造成除env.user外的用户访问hdfs会没有权限
         run("sed -i '$i\<value>false</value>' hdfs-site.xml")
         run("sed -i '$i\</property>' hdfs-site.xml")
 
@@ -118,47 +122,54 @@ def install():
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run("sed -i '$i\<name>mapreduce.tasktracker.map.tasks.maximum</name>' mapred-site.xml")  # map的最大tasks，这个地方和下面的reduce的tasks仅仅是最大值，实际值可在运行的程序里设置
+        run(
+            "sed -i '$i\<name>mapreduce.tasktracker.map.tasks.maximum</name>' mapred-site.xml")  # map的最大tasks，这个地方和下面的reduce的tasks仅仅是最大值，实际值可在运行的程序里设置
         run("sed -i '$i\<value>16</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run("sed -i '$i\<name>mapreduce.tasktracker.reduce.tasks.maximum</name>' mapred-site.xml")  # reduce的最大tasks，一般设置成服务器的核心数，校内一般不使用mapreduce功能，故不作修改
+        run(
+            "sed -i '$i\<name>mapreduce.tasktracker.reduce.tasks.maximum</name>' mapred-site.xml")  # reduce的最大tasks，一般设置成服务器的核心数，校内一般不使用mapreduce功能，故不作修改
         run("sed -i '$i\<value>16</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run("sed -i '$i\<name>mapreduce.framework.name</name>' mapred-site.xml")  # 执行MapReduce作业的运行时框架。Can be one of local, classic or yarn.
+        run(
+            "sed -i '$i\<name>mapreduce.framework.name</name>' mapred-site.xml")  # 执行MapReduce作业的运行时框架。Can be one of local, classic or yarn.
         run("sed -i '$i\<value>yarn</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run("sed -i '$i\<name>mapreduce.jobhistory.address</name>' mapred-site.xml")   # JobHistory-IPC的IP+端口
+        run("sed -i '$i\<name>mapreduce.jobhistory.address</name>' mapred-site.xml")  # JobHistory-IPC的IP+端口
         run("sed -i '$i\<value>" + master_ip + ":10020</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
         run("sed -i '$i\<property>' mapred-site.xml")
-        run("sed -i '$i\<name>mapreduce.jobhistory.webapp.address</name>' mapred-site.xml")   # JobHistory的IP+端口
+        run("sed -i '$i\<name>mapreduce.jobhistory.webapp.address</name>' mapred-site.xml")  # JobHistory的IP+端口
         run("sed -i '$i\<value>" + master_ip + ":19888</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
         # 写yarn-site.xml
         # https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.address</name>' yarn-site.xml")  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
+        run(
+            "sed -i '$i\<name>yarn.resourcemanager.address</name>' yarn-site.xml")  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
         run("sed -i '$i\<value>" + master_ip + ":8032</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.scheduler.address</name>' yarn-site.xml")  # The address of the scheduler interface.调度程序接口的地址。
+        run(
+            "sed -i '$i\<name>yarn.resourcemanager.scheduler.address</name>' yarn-site.xml")  # The address of the scheduler interface.调度程序接口的地址。
         run("sed -i '$i\<value>" + master_ip + ":8030</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.webapp.address</name>' yarn-site.xml")  # RM web application的地址，即yarn的web
+        run(
+            "sed -i '$i\<name>yarn.resourcemanager.webapp.address</name>' yarn-site.xml")  # RM web application的地址，即yarn的web
         run("sed -i '$i\<value>" + master_ip + ":8088</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.admin.address</name>' yarn-site.xml")  # The address of the RM admin interface.RM管理界面的地址
+        run(
+            "sed -i '$i\<name>yarn.resourcemanager.admin.address</name>' yarn-site.xml")  # The address of the RM admin interface.RM管理界面的地址
         run("sed -i '$i\<value>" + master_ip + ":8033</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
@@ -173,7 +184,8 @@ def install():
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.log-aggregation-enable</name>' yarn-site.xml")  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
+        run(
+            "sed -i '$i\<name>yarn.log-aggregation-enable</name>' yarn-site.xml")  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
         run("sed -i '$i\<value>true</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
@@ -208,7 +220,8 @@ def install():
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
+        run(
+            "sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
         run("sed -i '$i\<value>4</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
@@ -220,8 +233,11 @@ def install():
 def start():
     if env.host == master_ip:
         with cd(hadoop_home):
-            run('sbin/start-all.sh')
-            run('sbin/mr-jobhistory-daemon.sh start historyserver')
+            with settings(prompts={
+                'Are you sure you want to continue connecting (yes/no)? ': 'yes'
+            }):
+                run('sbin/start-all.sh')
+                run('sbin/mr-jobhistory-daemon.sh start historyserver')
 
 
 def stop():
