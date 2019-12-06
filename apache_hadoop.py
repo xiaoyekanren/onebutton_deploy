@@ -151,6 +151,12 @@ def install():
         # https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
         run("sed -i '$i\<property>' yarn-site.xml")
         run(
+            "sed -i '$i\<name>yarn.resourcemanager.resource-tracker.address</name>' yarn-site.xml")  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
+        run("sed -i '$i\<value>" + master_ip + ":8031</value>' yarn-site.xml")
+        run("sed -i '$i\</property>' yarn-site.xml")
+
+        run("sed -i '$i\<property>' yarn-site.xml")
+        run(
             "sed -i '$i\<name>yarn.resourcemanager.address</name>' yarn-site.xml")  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
         run("sed -i '$i\<value>" + master_ip + ":8032</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
