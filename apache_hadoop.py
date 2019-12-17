@@ -15,7 +15,7 @@ sudouser_passwd = cf.get('hadoop', 'sudouser_passwd')
 # 定义软件参数
 hadoop_local_file = cf.get('hadoop', 'hadoop_local_file')
 hadoop_folder = cf.get('hadoop', 'hadoop_folder')  # 即解压之后的文件夹名称
-data_folder = cf.get('hadoop', 'data_folder').split(',')
+data_folder = cf.get('hadoop', 'data_folder')
 java_home = cf.get('hadoop', 'java_home')
 dfs_replication = cf.get('hadoop', 'dfs_replication')
 # 需要拼接的字符串
@@ -39,7 +39,7 @@ def install():
     # 创建目录
     run('mkdir -p ' + hadoop_home + '/tmp')
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建文件夹并授权给hadoop所属用户
-        for folder in data_folder:
+        for folder in data_folder.split(','):
             sudo('mkdir -p ' + folder)
             sudo('chown -R ' + env.user + ':' + env.user + ' ' + folder)
     # 修改配置文件
@@ -79,7 +79,7 @@ def install():
         run("sed -i '$i\<property>' hdfs-site.xml")
         run("sed -i '$i\<name>dfs.datanode.data.dir</name>' hdfs-site.xml")  # 修改hdfs数据目录，支持多或单挂载路径
         run("sed -i '$i\<value>' hdfs-site.xml")
-        run("sed -i '$i" + cf.get('hadoop', 'data_folder') + "' hdfs-site.xml")
+        run("sed -i '$i" + data_folder + "' hdfs-site.xml")
         run("sed -i '$i\</value>' hdfs-site.xml")
         run("sed -i '$i\</property>' hdfs-site.xml")
 
