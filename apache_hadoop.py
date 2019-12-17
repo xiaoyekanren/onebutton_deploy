@@ -122,20 +122,17 @@ def install():
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run(
-            "sed -i '$i\<name>mapreduce.tasktracker.map.tasks.maximum</name>' mapred-site.xml")  # map的最大tasks，这个地方和下面的reduce的tasks仅仅是最大值，实际值可在运行的程序里设置
+        run("sed -i '$i\<name>mapreduce.tasktracker.map.tasks.maximum</name>' mapred-site.xml")  # map的最大tasks，这个地方和下面的reduce的tasks仅仅是最大值，实际值可在运行的程序里设置
         run("sed -i '$i\<value>16</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run(
-            "sed -i '$i\<name>mapreduce.tasktracker.reduce.tasks.maximum</name>' mapred-site.xml")  # reduce的最大tasks，一般设置成服务器的核心数，校内一般不使用mapreduce功能，故不作修改
+        run("sed -i '$i\<name>mapreduce.tasktracker.reduce.tasks.maximum</name>' mapred-site.xml")  # reduce的最大tasks，一般设置成服务器的核心数，校内一般不使用mapreduce功能，故不作修改
         run("sed -i '$i\<value>16</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
         run("sed -i '$i\<property>' mapred-site.xml")
-        run(
-            "sed -i '$i\<name>mapreduce.framework.name</name>' mapred-site.xml")  # 执行MapReduce作业的运行时框架。Can be one of local, classic or yarn.
+        run("sed -i '$i\<name>mapreduce.framework.name</name>' mapred-site.xml")  # 执行MapReduce作业的运行时框架。Can be one of local, classic or yarn.
         run("sed -i '$i\<value>yarn</value>' mapred-site.xml")
         run("sed -i '$i\</property>' mapred-site.xml")
 
@@ -149,87 +146,98 @@ def install():
         run("sed -i '$i\</property>' mapred-site.xml")
         # 写yarn-site.xml
         # https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
+        # 以下是yarn-resource manager的配置(即master节点)
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.resource-tracker.address</name>' yarn-site.xml")  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
-        run("sed -i '$i\<value>" + master_ip + ":8031</value>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.hostname</name>' yarn-site.xml")  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
+        run("sed -i '$i\<value>" + master_ip + "</value>' yarn-site.xml")
+        run("sed -i '$i\</property>' yarn-site.xml")
+
+        # 其实下面都是默认的....
+        run("sed -i '$i\<property>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.scheduler.address</name>' yarn-site.xml")  # The address of the scheduler interface.调度程序接口的地址。
+        run("sed -i '$i\<value>${yarn.resourcemanager.hostname}:8030</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.address</name>' yarn-site.xml")  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
-        run("sed -i '$i\<value>" + master_ip + ":8032</value>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.resource-tracker.address</name>' yarn-site.xml")  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
+        run("sed -i '$i\<value>${yarn.resourcemanager.hostname}:8031</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.scheduler.address</name>' yarn-site.xml")  # The address of the scheduler interface.调度程序接口的地址。
-        run("sed -i '$i\<value>" + master_ip + ":8030</value>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.address</name>' yarn-site.xml")  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
+        run("sed -i '$i\<value>${yarn.resourcemanager.hostname}:8032</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.webapp.address</name>' yarn-site.xml")  # RM web application的地址，即yarn的web
-        run("sed -i '$i\<value>" + master_ip + ":8088</value>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.admin.address</name>' yarn-site.xml")  # The address of the RM admin interface.RM管理界面的地址
+        run("sed -i '$i\<value>${yarn.resourcemanager.hostname}:8033</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.admin.address</name>' yarn-site.xml")  # The address of the RM admin interface.RM管理界面的地址
-        run("sed -i '$i\<value>" + master_ip + ":8033</value>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.webapp.address</name>' yarn-site.xml")  # RM web application的地址，即yarn的web
+        run("sed -i '$i\<value>${yarn.resourcemanager.hostname}:8088</value>' yarn-site.xml")
+        run("sed -i '$i\</property>' yarn-site.xml")
+
+        # 以下是yarn-nodemanager的配置(即slaves节点)
+        run("sed -i '$i\<property>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.nodemanager.hostname</name>' yarn-site.xml")  # nodemanager's hostname
+        run("sed -i '$i\<value>" + env.host + "</value>' yarn-site.xml")
+        run("sed -i '$i\</property>' yarn-site.xml")
+
+        run("sed -i '$i\<property>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.nodemanager.localizer.address</name>' yarn-site.xml")  # nodemanager的IP+端口
+        run("sed -i '$i\<value>${yarn.nodemanager.hostname}:8040</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
         run("sed -i '$i\<name>yarn.nodemanager.webapp.address</name>' yarn-site.xml")  # nodemanager的IP+端口
-        run("sed -i '$i\<value>" + master_ip + ":8042</value>' yarn-site.xml")
+        run("sed -i '$i\<value>${yarn.nodemanager.hostname}:8042</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.nodemanager.aux-services</name>' yarn-site.xml")  # 貌似是yarn任务的命名方式？？？
+        run("sed -i '$i\<name>yarn.nodemanager.aux-services</name>' yarn-site.xml")  # 貌似是yarn任务的调度方式？？？
         run("sed -i '$i\<value>mapreduce_shuffle</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
         run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.log-aggregation-enable</name>' yarn-site.xml")  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
+        run("sed -i '$i\<name>yarn.log-aggregation-enable</name>' yarn-site.xml")  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
         run("sed -i '$i\<value>true</value>' yarn-site.xml")
         run("sed -i '$i\</property>' yarn-site.xml")
 
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.nodemanager.resource.memory-mb</name>' yarn-site.xml")  # 当前节点yarn可用的内存总量
-        run("sed -i '$i\<value>8192</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.nodemanager.resource.cpu-vcores</name>' yarn-site.xml")  # 当前节点yarn可用的CPU核心数量
-        run("sed -i '$i\<value>8</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.scheduler.minimum-allocation-mb</name>' yarn-site.xml")  # 单个任务可申请内存的最小值
-        run("sed -i '$i\<value>1024</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.scheduler.maximum-allocation-mb</name>' yarn-site.xml")  # 单个任务可申请内存的最大值
-        run("sed -i '$i\<value>8096</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.scheduler.minimum-allocation-vcores</name>' yarn-site.xml")  # 单个任务可申请CPU的最小值
-        run("sed -i '$i\<value>1</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run("sed -i '$i\<name>yarn.scheduler.maximum-allocation-vcores</name>' yarn-site.xml")  # 单个任务可申请CPU的最大值
-        run("sed -i '$i\<value>4</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
-
-        run("sed -i '$i\<property>' yarn-site.xml")
-        run(
-            "sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
-        run("sed -i '$i\<value>4</value>' yarn-site.xml")
-        run("sed -i '$i\</property>' yarn-site.xml")
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.nodemanager.resource.memory-mb</name>' yarn-site.xml")  # 当前节点yarn可用的内存总量
+        # run("sed -i '$i\<value>8192</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.nodemanager.resource.cpu-vcores</name>' yarn-site.xml")  # 当前节点yarn可用的CPU核心数量
+        # run("sed -i '$i\<value>8</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.scheduler.minimum-allocation-mb</name>' yarn-site.xml")  # 单个任务可申请内存的最小值
+        # run("sed -i '$i\<value>1024</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.scheduler.maximum-allocation-mb</name>' yarn-site.xml")  # 单个任务可申请内存的最大值
+        # run("sed -i '$i\<value>8096</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.scheduler.minimum-allocation-vcores</name>' yarn-site.xml")  # 单个任务可申请CPU的最小值
+        # run("sed -i '$i\<value>1</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.scheduler.maximum-allocation-vcores</name>' yarn-site.xml")  # 单个任务可申请CPU的最大值
+        # run("sed -i '$i\<value>4</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
+        #
+        # run("sed -i '$i\<property>' yarn-site.xml")
+        # run("sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
+        # run("sed -i '$i\<value>4</value>' yarn-site.xml")
+        # run("sed -i '$i\</property>' yarn-site.xml")
 
         if env.host == master_ip:  # 格式化namenode，只格式化master节点
             with cd(hadoop_home):
@@ -243,7 +251,7 @@ def start():
                 'Are you sure you want to continue connecting (yes/no)? ': 'yes'
             }):
                 run('sbin/start-all.sh')
-                run('sbin/mr-jobhistory-daemon.sh start historyserver')
+                # run('sbin/mr-jobhistory-daemon.sh start historyserver')
 
 
 def stop():
