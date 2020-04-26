@@ -14,10 +14,10 @@ env.hosts = cf.get('jdk', 'hosts').split(',')
 sudouser = cf.get('jdk', 'sudouser')
 sudouser_passwd = cf.get('jdk', 'sudouser_passwd')
 # 定义软件参数
-jdk_local_path = cf.get('jdk', 'jdk_local_path')
+jdk_local_file = cf.get('jdk', 'jdk_local_file')
 jdk_folder = cf.get('jdk', 'jdk_folder')  # 即解压之后的文件夹名称
 # 需要拼接的字符串
-jdk_upload_path = os.path.join('/home', env.user, 'jdk.tar.gz').replace('\\', '/')  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
+jdk_upload_file_path = os.path.join('/home', env.user, 'jdk.tar.gz').replace('\\', '/')  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
 java_home = os.path.join('/home', env.user, jdk_folder).replace('\\', '/')  # JAVA_HOME  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
 java_home_global = '/usr/local/' + jdk_folder  # 全局的JAVA_HOME
 
@@ -25,7 +25,7 @@ java_home_global = '/usr/local/' + jdk_folder  # 全局的JAVA_HOME
 # local
 def install():
     # 上传
-    put(jdk_local_path, jdk_upload_path)
+    put(jdk_local_file, jdk_upload_file_path)
     # 解压&删除
     run('tar -zxvf jdk.tar.gz && rm -f jdk.tar.gz')
     # 写入
@@ -41,10 +41,10 @@ def install():
 # global
 def install_global():
     # 上传
-    put(jdk_local_path, jdk_upload_path)
+    put(jdk_local_file, jdk_upload_file_path)
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户
         # 移动文件夹
-        sudo('mv ' + jdk_upload_path + ' /usr/local/')
+        sudo('mv ' + jdk_upload_file_path + ' /usr/local/')
         with cd('/usr/local'):  # 进入该目录
             # 解压&删除
             sudo('tar -zxvf jdk.tar.gz && rm -f jdk.tar.gz')
@@ -57,6 +57,3 @@ def install_global():
         sudo("echo 'export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH' >>/etc/profile")  # PATH  # 输出$环境变量必须用单引号
         sudo('source /etc/profile')  # 立刻生效  # 输出$环境变量必须用单引号
         print('jdk already install at ' + java_home_global)
-
-
-

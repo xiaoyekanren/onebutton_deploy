@@ -1,5 +1,5 @@
 # onebutton_deploy
-一键部署脚本，fabfile
+一键部署脚本，fabric
 ## python==2.7
 ## python依赖
 > * fabric==1.14.1
@@ -20,9 +20,15 @@
 > * 多对多免密钥登录
 ## 配置文件
 在passwd.ini文件里修改各个软件的服务器、配置等参数，多软件不冲突
+## 方法
+> * install
+> * start
+> * stop
 ## 使用方式
 例如：
+加入我要安装jdk，首先需要打开passwd.ini修改jdk's section的相关参数，之后执行:
 ``` shell
-fab -f apache_cassandra.py install
+fab -f sys-jdk_install.py install
 使用 -w 可跳过失败
 ```
+就可以了

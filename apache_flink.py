@@ -22,6 +22,7 @@ flink_config_folder = os.path.join(flink_home, 'conf').replace('\\', '/')
 # 依赖
 master_ip = cf.get('flink', 'master_ip')
 slaves_ip = cf.get('flink', 'slaves_ip').split(',')
+java_home = cf.get('flink', 'java_home')
 
 
 # 安装
@@ -43,6 +44,7 @@ def install():
         for slave in slaves_ip:
             run('echo ' + slave + '>> slaves')
         run('echo "' + master_ip + ':8081" > masters')
+        run('echo "env.java.home: ' + java_home + '" >> flink-conf.yaml')
 
 
 # start

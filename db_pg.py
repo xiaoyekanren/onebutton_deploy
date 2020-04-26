@@ -71,6 +71,8 @@ def install():
     print '--------------------------------------\nfinish install pg\n'
     print 'host is %s,\npg user is %s,\npassword is %s\n' % (",".join(env.hosts), superuser, superuser_passwd)
     print '--------------------------------------\nstart way:\nfab -f db_pg.py start'
+    print '--------------------------------------\nstart cli:'
+    print pg_home + '/bin/psql -U ' + superuser + ' -d postgres\n--------------------------------------'
 
 
 def start():
