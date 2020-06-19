@@ -41,7 +41,7 @@ sudouser_passwd = 'Dwf12345'
 # 这个是默认的三个端口
 default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
 # 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
-the_first_host = {'first_host': '192.168.1.101', 'front_page': 8401, 'model_manage': 6281, 'service_manage': 9311, 'object_manage': 7291, 'step': 1}
+the_first_host = {'first_host': '192.168.1.151', 'front_page': 8451, 'model_manage': 6331, 'service_manage': 9361, 'object_manage': 7341, 'step': 10}
 # 修改的2个配置文件
 replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/opt/apache-tomcat-8.5.34/webapps/app-web/config.js']
 # # --------------------------->

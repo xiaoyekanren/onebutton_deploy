@@ -17,8 +17,9 @@ sudouser_passwd = cf.get('jdk', 'sudouser_passwd')
 jdk_local_file = cf.get('jdk', 'jdk_local_file')
 jdk_folder = cf.get('jdk', 'jdk_folder')  # 即解压之后的文件夹名称
 # 需要拼接的字符串
-jdk_upload_file_path = os.path.join('/home', env.user, 'jdk.tar.gz').replace('\\', '/')  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
-java_home = os.path.join('/home', env.user, jdk_folder).replace('\\', '/')  # JAVA_HOME  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
+user_home = cf.get('jdk', 'user_home')
+jdk_upload_file_path = os.path.join(user_home, 'jdk.tar.gz').replace('\\', '/')  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
+java_home = os.path.join(user_home, jdk_folder).replace('\\', '/')  # JAVA_HOME  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
 java_home_global = '/usr/local/' + jdk_folder  # 全局的JAVA_HOME
 
 
