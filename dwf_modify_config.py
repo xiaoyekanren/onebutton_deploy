@@ -48,34 +48,35 @@ def replace(filename, old_value, new_value):
     run("sed -i 's:" + bytes(old_value) + ":" + bytes(new_value) + ":g' " + filename)
 
 
-# # 以下都是需要修改的内容
-# # <!-------------------------
+# default_host=默认DWF主机的端口；the_first_host用来生成需要替换的主机列表；replace_files=要替换的文件列表
+default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
+# 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
+the_first_host = {'first_host': '192.168.3.1', 'front_page': 8501, 'model_manage': 6381, 'service_manage': 9411, 'object_manage': 7391, 'step': 10}  # 需要修改
+# 将要替换的完整文件的路径，将。以下配置文件config.js的相关值全部替换，
+replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/opt/apache-tomcat-8.5.34/webapps/app-web/config.js']  # 一般无需动
+# # --------------------------->
+
+
+# # 以下是要替换的主机信息
 # 普通用户账号密码
 env.user = 'ubuntu'
 env.password = 'Dwf12345'
 # sudo权限账号密码
 sudouser = 'ubuntu'
 sudouser_passwd = 'Dwf12345'
-
-# 这个是默认的三个端口
-default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
-# 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
-the_first_host = {'first_host': '192.168.3.1', 'front_page': 8501, 'model_manage': 6381, 'service_manage': 9411, 'object_manage': 7391, 'step': 10}
-# 修改的2个配置文件，将这两个配置文件的值全部替换，
-replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/opt/apache-tomcat-8.5.34/webapps/app-web/config.js']
+# 生成env.hosts列表,共step个
+env.hosts = addlist_hosts(first_host=the_first_host['first_host'], step=the_first_host['step'])
 # # --------------------------->
 
-
-# 生成step个ip地址列表，step个8180列表，step个6060列表，step个7070列表，step个9090列表
-env.hosts = addlist_hosts(first_host=the_first_host['first_host'], step=the_first_host['step'])
-print env.hosts
-port_front_page_list = addlist_port(first_port=the_first_host['front_page'], step=the_first_host['step'])
+# 以下是生成信息，无需修改
+# 生成step个8180列表，step个6060列表，step个7070列表，step个9090列表
+port_front_page_list = addlist_port(first_port=the_first_host['front_page'], step=the_first_host['step'])  # 实际上这行没用...
 port_model_manage_list = addlist_port(first_port=the_first_host['model_manage'], step=the_first_host['step'])
 port_service_manage_list = addlist_port(first_port=the_first_host['service_manage'], step=the_first_host['step'])
 port_object_manage_list = addlist_port(first_port=the_first_host['object_manage'], step=the_first_host['step'])
 
 
-def modify():
+def modify():  # 我是主函数
     """
     主函数，执行这个
     :return:
