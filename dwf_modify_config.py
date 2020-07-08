@@ -14,7 +14,7 @@ def addlist_hosts(first_host, step):
     tail = first_host.split('.')[-1]
     aaa.append(first_host)
     i = 1
-    while i <= step:
+    while i < step:
         the_next_host = head + '.' + bytes(int(tail)+i)
         aaa.append(the_next_host)
         i += 1
@@ -60,7 +60,7 @@ sudouser_passwd = 'Dwf12345'
 # 这个是默认的三个端口
 default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
 # 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
-the_first_host = {'first_host': '192.168.3.1', 'front_page': 8501, 'model_manage': 6381, 'service_manage': 9411, 'object_manage': 7391, 'step': 60}
+the_first_host = {'first_host': '192.168.3.1', 'front_page': 8501, 'model_manage': 6381, 'service_manage': 9411, 'object_manage': 7391, 'step': 10}
 # 修改的2个配置文件，将这两个配置文件的值全部替换，
 replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/opt/apache-tomcat-8.5.34/webapps/app-web/config.js']
 # # --------------------------->
@@ -68,6 +68,7 @@ replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/op
 
 # 生成step个ip地址列表，step个8180列表，step个6060列表，step个7070列表，step个9090列表
 env.hosts = addlist_hosts(first_host=the_first_host['first_host'], step=the_first_host['step'])
+print env.hosts
 port_front_page_list = addlist_port(first_port=the_first_host['front_page'], step=the_first_host['step'])
 port_model_manage_list = addlist_port(first_port=the_first_host['model_manage'], step=the_first_host['step'])
 port_service_manage_list = addlist_port(first_port=the_first_host['service_manage'], step=the_first_host['step'])
