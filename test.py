@@ -34,3 +34,10 @@ def test2():
 def test3():
     with settings(warn_only=True):
         run("whoami")
+
+
+# 这个貌似是碰到错误继续执行？
+def test4():
+    aaa = run('pwd')
+
+    print aaa[:-1]

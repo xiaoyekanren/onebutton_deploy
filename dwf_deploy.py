@@ -20,6 +20,26 @@ else:
     user_home = os.path.join('/home' + env.user).replace('\\', '/')
 
 
+# 杀死当前全部java进程，虽然是新机器
+def killpid():
+    with settings(user=sudouser, password=sudouser_passwd):
+        run("ps aux | grep '[d]wf-modeler' | awk '{print $2}' | xargs kill -9")
+        run("ps aux | grep '[d]wf-app' | awk '{print $2}' | xargs sudo kill -9")
+        run("ps aux | grep '[d]wf-monitor' | awk '{print $2}' | xargs kill -9")
+        run("ps aux | grep '[p]ostgres' | awk '{print $2}' | xargs sudo kill -9")
+        run("ps aux | grep '[t]omcat' | awk '{print $2}' | xargs sudo kill -9")
+
+
+
+
+def upload():
+
+
+
+
+
+
+
 # 安装
 def install():
     if env.user == 'root':

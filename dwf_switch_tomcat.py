@@ -32,7 +32,6 @@ sudouser_passwd = 'Dwf12345'
 # env.hosts = ['192.168.3.91']
 the_first_host = {'first_host': '192.168.3.1', 'step': 10}
 env.hosts = addlist_hosts(first_host=the_first_host['first_host'], step=the_first_host['step'])
-print env.hosts
 # 定义参数
 tomcat_document = 'apache-tomcat-9.0.37'
 
@@ -64,3 +63,7 @@ def modify():
         # 删除老tomcat文件夹
         run('rm -rf /opt/apache-tomcat-8.5.34')
     # sudo('reboot')
+
+# 执行方式
+# 修改fab -f dwf_switch_tomcat.py modify
+# 当前作废
