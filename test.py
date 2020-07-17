@@ -41,3 +41,8 @@ def test4():
     aaa = run('pwd')
 
     print aaa[:-1]
+
+
+def test5():
+    a=b=3
+    print a, b

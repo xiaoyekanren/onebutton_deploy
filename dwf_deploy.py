@@ -9,15 +9,27 @@ cf = fabfile.cf
 env.user = cf.get('dwf', 'localuser')
 env.password = cf.get('dwf', 'localuser_passwd')
 env.hosts = cf.get('dwf', 'hosts').split(',')
+
+
+def check_user_home():
+    return sudo("cat /etc/passwd|grep -i ^%s|awk -F ':' {'print $6'}" % env.user)
+
+
 # 定义sudo用户参数
 sudouser = cf.get('dwf', 'sudouser')
 sudouser_passwd = cf.get('dwf', 'sudouser_passwd')
 dwf_url = cf.get('dwf', 'dwf_url')
+# -----------
+current_path = user_home = check_user_home()
 
-if cf.get('dwf', 'user_home'):
-    user_home = cf.get('dwf', 'user_home')
-else:
-    user_home = os.path.join('/home' + env.user).replace('\\', '/')
+
+
+
+
+def check_user():
+    if env.user == 'root':
+        print ("can't install by root")
+        exit()
 
 
 # 杀死当前全部java进程，虽然是新机器
@@ -30,34 +42,21 @@ def killpid():
         run("ps aux | grep '[t]omcat' | awk '{print $2}' | xargs sudo kill -9")
 
 
-
-
-def upload():
-
-
-
-
-
+def upload_release():
+    # 下载
+    run('wget -O setupfiles.tar.gz %s' % dwf_url)
+    # 解压&删除
+    run('tar -zxvf setupfiles.tar.gz')
+    # 删除
+    # run('rm -f setupfiles.tar.gz')
+    release_path =
 
 
 # 安装
 def install():
-    if env.user == 'root':
-        print ("can't install by root")
-        exit()
-    # 下载
-    run('wget -O dwf.tar.gz %s ' % dwf_url)
-    # 解压&删除
-    run('tar -zxvf dwf.tar.gz')
-    #  && rm -f hadoop.tar.gz')
-
     # 创建opt目录
-    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建文件夹并授权给hadoop所属用户
-        sudo('mkdir -p /opt')
+    sudo('mkdir -p /opt')
+    sudo('chown -R %s:%s /opt' % env.user, env.user)
 
-    # 修改配置文件
-    with cd(hadoop_config_folder):
-        # hadoop-env.sh
-        run(
-            "sed -i 's:export JAVA_HOME=.*:export JAVA_HOME=" + java_home + ":g' hadoop-env.sh")  # 修改hadoop-env.sh的jdk路径
-        # slaves
+
+def install_jdk():
