@@ -45,15 +45,15 @@ def replace(filename, old_value, new_value):
     :param new_value:替换之后的值
     :return:无返回值，仅仅是执行
     """
-    run("sed -i 's:" + bytes(old_value) + ":" + bytes(new_value) + ":g' " + filename)
+    sudo("sed -i 's:" + bytes(old_value) + ":" + bytes(new_value) + ":g' " + filename)
 
 
 # default_host=默认DWF主机的端口；the_first_host用来生成需要替换的主机列表；replace_files=要替换的文件列表
 default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
 # 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
-the_first_host = {'first_host': '192.168.3.1', 'front_page': 8501, 'model_manage': 6381, 'service_manage': 9411, 'object_manage': 7391, 'step': 10}  # 需要修改
+the_first_host = {'first_host': '192.168.3.1', 'front_page': 8593, 'model_manage': 6473, 'service_manage': 9503, 'object_manage': 7483, 'step': 96}  # 需要修改
 # 将要替换的完整文件的路径，将。以下配置文件config.js的相关值全部替换，
-replace_files = ['/opt/apache-tomcat-8.5.34/webapps/modeler-web/config.js', '/opt/apache-tomcat-8.5.34/webapps/app-web/config.js']  # 一般无需动
+replace_files = ['/opt/apache-tomcat/webapps/modeler-web/config.js', '/opt/apache-tomcat/webapps/app-web/config.js']  # 一般无需动
 # # --------------------------->
 
 
@@ -81,12 +81,20 @@ def modify():  # 我是主函数
     主函数，执行这个
     :return:
     """
+    # index_place即确定env.host在env.hosts里面的位置，用来确定其他三个列表的值
     index_place = env.hosts.index(env.host)
     with settings(user=sudouser, password=sudouser_passwd):
         for file in replace_files:
             replace(filename=file, old_value=default_host['model_manage'], new_value=port_model_manage_list[index_place])
             replace(filename=file, old_value=default_host['service_manage'], new_value=port_service_manage_list[index_place])
             replace(filename=file, old_value=default_host['object_manage'], new_value=port_object_manage_list[index_place])
+
+
+def add_dns():
+    with settings(user=sudouser, password=sudouser_passwd):
+        replace(filename='/etc/resolv.conf', old_value='options edns0', new_value='#options edns0')
+        replace(filename='/etc/resolv.conf', old_value='nameserver 127.0.0.53', new_value='#nameserver 127.0.0.53')
+    sudo("echo 'nameserver 166.111.8.28' >> /etc/resolv.conf")
 
 
 # 修改配置项：
