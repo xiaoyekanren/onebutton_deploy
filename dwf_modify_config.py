@@ -51,7 +51,7 @@ def replace(filename, old_value, new_value):
 # default_host=默认DWF主机的端口；the_first_host用来生成需要替换的主机列表；replace_files=要替换的文件列表
 default_host = {'front_page': 8180, 'model_manage': 6060, 'service_manage': 9090, 'object_manage': 7070}
 # 这个修改成第一台主机，以及映射出来的3个端口。默认IP递增1，step为有多少台主机
-the_first_host = {'first_host': '192.168.3.1', 'front_page': 8593, 'model_manage': 6473, 'service_manage': 9503, 'object_manage': 7483, 'step': 96}  # 需要修改
+the_first_host = {'first_host': '192.168.3.1', 'front_page': 8593, 'model_manage': 6473, 'object_manage': 7483, 'service_manage': 9503, 'step': 96}  # 需要修改
 # 将要替换的完整文件的路径，将。以下配置文件config.js的相关值全部替换，
 replace_files = ['/opt/apache-tomcat/webapps/modeler-web/config.js', '/opt/apache-tomcat/webapps/app-web/config.js']  # 一般无需动
 # # --------------------------->
