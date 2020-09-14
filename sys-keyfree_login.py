@@ -36,6 +36,8 @@ def install2():
     run('echo "' + addrsa() + '" > .ssh/authorized_keys')
     if env.host == env.hosts[-1]:
         os.system('fab -f sys-keyfree_login.py rmlocalfile')
+    run('chmod 600 ~/.ssh/authorized_keys')
+    run('chmod 700 ~/.ssh')
 
 
 def addrsa():
