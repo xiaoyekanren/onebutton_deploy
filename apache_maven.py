@@ -13,11 +13,12 @@ env.hosts = cf.get('maven', 'hosts').split(',')
 sudouser = cf.get('maven', 'sudouser')
 sudouser_passwd = cf.get('maven', 'sudouser_passwd')
 # 定义软件参数
+user_home = cf.get('maven', 'user_home')
 mvn_local_file = cf.get('maven', 'mvn_local_file')
 mvn_folder = cf.get('maven', 'mvn_folder')
 # 需要拼接的字符串
-mvn_upload_file_path = os.path.join('/home', env.user, 'mvn.tar.gz').replace('\\', '/')
-mvn_home = os.path.join('/home', env.user, mvn_folder).replace('\\', '/')
+mvn_upload_file_path = os.path.join(user_home, 'mvn.tar.gz').replace('\\', '/')
+mvn_home = os.path.join(user_home, mvn_folder).replace('\\', '/')
 mvn_home_global = '/usr/local/' + mvn_folder  # 全局的JAVA_HOME
 
 
