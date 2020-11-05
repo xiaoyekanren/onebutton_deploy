@@ -17,7 +17,7 @@
 > * scala==2.12.8
 > * 多对多增加hosts
 > * jdk==1.8.*
-> * 多对多免密钥登录
+> * 多对多免密钥登录,适用于新机器部署，会清理掉其他已存在的密钥
 ## 配置文件
 在passwd.ini文件里修改各个软件的服务器、配置等参数，多软件不冲突
 ## 方法
@@ -32,3 +32,8 @@ fab -f sys-jdk_install.py install
 使用 -w 可跳过失败
 ```
 就可以了
+## 注意
+### 1、完整命令：
+```python 
+ pyinstaller -F batch_keyfreelogin_along.py
+```
