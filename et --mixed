@@ -1,0 +1,203 @@
+[33mcommit 3d191fab905d8460ec00850b0f6a9b75a46f524e[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Sat Oct 24 19:16:43 2020 +0800
+
+    maven-add'user_home',batch-update'new version for keyfree'
+
+[33mcommit 91bacd9b9bf18b2f138396b0e8ea40348f549fc1[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Sat Oct 24 19:15:37 2020 +0800
+
+    maven-add'user_home',batch-update'new version for keyfree'
+
+[33mcommit b7e40ae4295466ff8e568393c9c204faef5d3529[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Sep 14 13:30:03 2020 +0800
+
+    use this to produce exe
+
+[33mcommit b0e7162923accb9c67f3b70dbfb5b6c807ec913c[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Sep 14 11:43:56 2020 +0800
+
+    daily
+
+[33mcommit c2dddb780c6ad8200f5ca9f79a70e241485a286b[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Sep 14 11:43:15 2020 +0800
+
+    add vscode's install
+
+[33mcommit cbaa6f9574d7e8d54fcff62323be517fedbb4bd3[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Sep 14 11:40:54 2020 +0800
+
+    add chmod's for centos
+
+[33mcommit 19cde13bef4d9ff6d442f34aa0c480915e1ec404[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Sep 14 11:39:47 2020 +0800
+
+    i don't know
+
+[33mcommit d3f0476fb9bf660e859d807d88a1a7398ca9ef57[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue Jul 21 11:32:52 2020 +0800
+
+    modify 'the_first_host' order
+
+[33mcommit 7690ff186cbd396a682742795b9a0ddb5b466e61[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Jul 17 16:32:24 2020 +0800
+
+    daily
+
+[33mcommit 6e9ba821c9e91b1046b0cf9ba7dd0269d25ebd8c[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Jul 17 09:02:44 2020 +0800
+
+    add function 批量增加DNS
+
+[33mcommit 21323cb3ed96c3d82c778f3639962df90d38ec0b[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Thu Jul 16 14:07:49 2020 +0800
+
+    daily
+
+[33mcommit 583761f62ff395d9d0760b04aefec9cf31ebffff[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Wed Jul 8 12:26:36 2020 +0800
+
+    use this script,to update tomcat's version
+
+[33mcommit 4aa749d0e5f46d2556b254c45cdbc9d637b059ac[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Wed Jul 8 12:24:23 2020 +0800
+
+    delete some comments,add some comments,adjust code order
+
+[33mcommit 8b7a257915e895add2e7bfc2d62ff2723ce7330c[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Wed Jul 8 12:10:47 2020 +0800
+
+    modify def(addlist_hosts),change 'i<=step' to 'i<step'
+
+[33mcommit 2b4a7714abba471da41b51f99acdd03e8c4f304b[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue Jun 23 15:51:25 2020 +0800
+
+    add notes for dwf_modify_config.py
+
+[33mcommit 2de6b2821e28bb013c24e8009f7f7bd729f37913[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Jun 19 12:04:56 2020 +0800
+
+    modify jdk install path'problem
+
+[33mcommit 87fee43ed86688e27ecdeec0d8bc05bfaffef7ee[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Wed May 27 14:31:03 2020 +0800
+
+    add dwf_modify_config.py's notes ,daily update
+
+[33mcommit 4581fed4fe2e42104127861015ac80eca62a84cc[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue May 19 15:40:14 2020 +0800
+
+    'daily'
+
+[33mcommit 80bec65594afa23d82920e2847fcfa568ce33f17[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Sun Apr 26 16:24:32 2020 +0800
+
+    daily update ,lang time no update
+
+[33mcommit 1d711d84c00d4d2e094edd7cd39e18a77406d71f[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue Dec 17 17:31:53 2019 +0800
+
+    modify hadoopdata_folder
+
+[33mcommit 992a8896ea946452ca18c8e4b65687090cb6b8b2[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue Dec 17 12:30:45 2019 +0800
+
+    fix hadoop's yarn's bug
+
+[33mcommit f343576f2bcd3968d9ae38059964d9e402fe83c7[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Dec 6 17:10:56 2019 +0800
+
+    modify hadoop's yarn-site.xml
+
+[33mcommit 9670fb59ebedc84b0b30882edf98e4ccd0e7f6b1[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Thu Dec 5 16:58:42 2019 +0800
+
+    add flink 'SSH authentication'
+
+[33mcommit 70f4a9e5727edeebdbd4b391fe94ef9b61f354e9[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Thu Dec 5 16:57:07 2019 +0800
+
+    add hadoop spark 'SSH authentication'
+
+[33mcommit 6ba2c72c8efa9ed62f6b1f25a2943f99b8be1343[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Thu Dec 5 16:48:42 2019 +0800
+
+    modify sys-keyfree_login.py,make it true
+
+[33mcommit 76823c51f63486d2ad7fbd914190b1c9780a9c7f[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Dec 2 17:06:23 2019 +0800
+
+    add db_pg.py,print's describe
+
+[33mcommit 908b589fe7906974cf372f8b9f8ccf0e687b0bd1[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Dec 2 13:39:13 2019 +0800
+
+    rm blank line
+
+[33mcommit ce8f4b19297a74aba0e8f0c6f0df2cfa104605ca[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Dec 2 13:33:29 2019 +0800
+
+    merge now code
+
+[33mcommit 478612cfbc84971a31e46499a060012137e7587b[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Mon Dec 2 13:16:02 2019 +0800
+
+    add pg one button deploy
+
+[33mcommit 44be7e73f025e835008d15049d9ed2353bb5e871[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Nov 29 18:49:38 2019 +0800
+
+    modify sys-keyfree_login
+
+[33mcommit 88becf6a1e45e1733decc98294a085c006380784[m
+Author: 张正明 <876670773@qq.com>
+Date:   Fri Nov 29 15:51:51 2019 +0800
+
+    Update README.md
+
+[33mcommit 2fac1a27d1a2dbe6872de93b8072fbed7cb30fd8[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Fri Nov 29 15:47:48 2019 +0800
+
+    add flink,storm;modify some files
+
+[33mcommit 20a2da795d9d1069a83d039a677cd685a86af27f[m
+Author: xiaoyekanren <876670773@qq.com>
+Date:   Tue Oct 8 12:04:34 2019 +0800
+
+    first commit
+
+[33mcommit cf27605631ce138a485c6302aa59ebf793e8f295[m
+Author: 张正明 <876670773@qq.com>
+Date:   Tue Oct 8 11:58:59 2019 +0800
+
+    Initial commit
