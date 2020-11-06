@@ -1,52 +1,34 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-from os import path
-from time import strftime
 
-#
-upload_folder = path.join('/tmp', strftime("%Y%m%d") + '_zzm').replace('\\', '/')
-upload_file = path.join(upload_folder, 'zookeeper.tar.gz').replace('\\', '/')
-# 读取fabfile文件的cf参数
-cf = fabfile.cf
-# 定义env
-env.user = cf.get('zookeeper', 'localuser')
-env.password = cf.get('zookeeper', 'localuser_passwd')
-env.hosts = cf.get('zookeeper', 'hosts').split(',')
-# 定义sudo用户参数
-sudouser = cf.get('zookeeper', 'sudouser')
-sudouser_passwd = cf.get('zookeeper', 'sudouser_passwd')
-# 定义软件参数
-zookeeper_local_file = cf.get('zookeeper', 'zookeeper_local_file')
-zookeeper_folder = cf.get('zookeeper', 'zookeeper_folder')
-install_path = cf.get('zookeeper', 'install_path')
-# 需要拼接的字符串
-zookeeper_upload_file_path = path.join('/home', env.user, 'zookeeper.tar.gz').replace('\\', '/')
-zookeeper_home = path.join(install_path, zookeeper_folder).replace('\\', '/')
-zookeeper_config_folder = path.join(zookeeper_home, 'conf').replace('\\', '/')
-# 依赖
+section = 'zookeeper'  # 指定config.ini的section名称
+cf = fabfile.cf  # 读取fabfile文件的cf参数
+# config.ini指定的通用参数
+env.hosts, env.user, env.password, sudouser, sudouser_passwd, local_file, software_folder, install_path = fabfile.get_common_var(section)
+software_home = fabfile.get_software_home(section)
+# config.ini指定的软件配置
 dataDir = cf.get('zookeeper', 'dataDir')
 dataLogDir = cf.get('zookeeper', 'dataLogDir')
+# 需定义的参数
 myid = 1
 
 
 # 安装
 def install():
-    if env.user == 'root':
-        print ("can't install by root")
-        exit()
+    # 检查是否是root用户，是就退出
+    fabfile.check_user(env.user)
     # 上传
-    run('mkdir -p  %s' % upload_folder)
-    put(zookeeper_local_file, upload_file)
+    upload_file = fabfile.upload(section)
     # 解压
-    run('tar -zxvf %s -C%s' % (upload_file, install_path))  # 解压
+    fabfile.decompress(section, upload_file)
+    # 正式开始安装
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建zookeeper相关文件夹并授权给zookeeper所属用户
         sudo('mkdir -p ' + dataDir)
         sudo('chown -R ' + env.user + ':' + env.user + ' ' + dataDir)
         sudo('mkdir -p ' + dataLogDir)
         sudo('chown -R ' + env.user + ':' + env.user + ' ' + dataLogDir)
-    # 开始配置zookeeper
-    with cd(zookeeper_config_folder):  # 进入配置文件目录
+    with cd(software_home + '/conf'):  # 进入配置文件目录
         run('touch zoo.cfg')
         run('echo "tickTime=2000" >> zoo.cfg')
         run('echo "initLimit=10" >> zoo.cfg')
@@ -67,11 +49,11 @@ def install():
 
 # 启动
 def start():
-    with cd(zookeeper_home):
+    with cd(software_home):
         run('bin/zkServer.sh start')
 
 
 # 停止
 def stop():
-    with cd(zookeeper_home):
+    with cd(software_home):
         run('bin/zkServer.sh stop')

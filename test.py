@@ -1,7 +1,9 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-import os
+from os import path
+from time import strftime
+
 
 # 读取fabfile文件的cf参数
 cf = fabfile.cf
@@ -36,7 +38,6 @@ def test3():
         run("whoami")
 
 
-# 这个貌似是碰到错误继续执行？
 def test4():
     aaa = run('pwd')
 
@@ -46,3 +47,11 @@ def test4():
 def test5():
     a=b=3
     print a, b
+
+
+def test6():
+    try:
+        aaa = cf.get('66666', 'loc7777aluser')
+    except:
+        aaa = ''
+        print aaa
