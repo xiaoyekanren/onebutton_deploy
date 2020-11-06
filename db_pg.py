@@ -1,8 +1,13 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-import os
+from os import path
+from time import strftime
+from sys import argv
 
+#
+upload_folder = path.join('/tmp', strftime("%Y%m%d") + '_zzm').replace('\\', '/')
+upload_file = path.join(upload_folder, 'pg.tar.gz').replace('\\', '/')
 # 读取fabfile文件的cf参数
 cf = fabfile.cf
 # 定义env
@@ -21,8 +26,7 @@ max_connections = cf.get('pg', 'max_connections')
 superuser = cf.get('pg', 'superuser')
 superuser_passwd = cf.get('pg', 'superuser_passwd')
 # 需要拼接的字符串
-pg_upload_file_path = os.path.join('/home', env.user, 'pg.tar.gz').replace('\\', '/')
-pg_home = os.path.join(install_path, 'pgsql').replace('\\', '/')
+pg_home = path.join(install_path, pg_folder).replace('\\', '/')
 
 
 # 安装
@@ -31,17 +35,15 @@ def install():
         print ("can't install by root")
         exit()
     # 上传
-    put(pg_local_file, pg_upload_file_path)
-    # run('wget -O pg.tar.gz https://cloud.tsinghua.edu.cn/f/f9aefda2c5d0428fa044/?dl=1')
-    # 解压&删除
+    run('mkdir -p  %s' % upload_folder)
+    put(pg_local_file, upload_file)
+    # 授权&&解压
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建pg_WORKER_DIR文件夹并授权给pg所属用户
         sudo('mkdir -p ' + pg_home)
         sudo('mkdir -p ' + data_path)
         sudo('chown -R ' + env.user + ':' + env.user + ' ' + pg_home)
         sudo('chown -R ' + env.user + ':' + env.user + ' ' + data_path)
-
-    run('tar -zxvf pg.tar.gz' + ' -C' + install_path)
-    #  && rm -f pg.tar.gz
+    run('tar -zxvf %s -C%s' % (upload_file, install_path))  # 解压
 
     # 开始配置pg
     with cd(pg_home + '/bin'):  # 进入pg目录
@@ -50,7 +52,7 @@ def install():
     # 修改默认参数
     with cd(data_path):
         run('sed -i "s:max_connections = 100:max_connections = ' + max_connections + ':g" postgresql.conf')
-        run('sed -i "s/#listen_addresses =.*/listen_addresses =' + "'" +  '*'  +"'" + '/g" postgresql.conf')
+        run('sed -i "s/#listen_addresses =.*/listen_addresses =' + "'" + '*' + "'" + '/g" postgresql.conf')
         run('sed -i "s:#port = 5432:port = 5432:g" postgresql.conf')
         run('echo "host    all             all             0.0.0.0/0               trust" >> pg_hba.conf')
     # 启动pg
@@ -64,21 +66,31 @@ def install():
             'Enter it again: ': superuser_passwd
         }):
             run('./createuser -dlrs ' + superuser + ' -P')
+            # -dlrs
+            # d="role can create new databases"
+            # l="role can login (default)"
+            # r="role can create new roles"
+            # s="role will be superuser"
     # 杀了PG
     with settings(warn_only=True):
         run("ps -ef|grep 'postgres'|awk '{print $2}'|xargs kill -9;echo 'already killed'")
     # 输出结果,输出host类型是list必须带",".join(),否则会显示[u]
-    print '--------------------------------------\nfinish install pg\n'
-    print 'host is %s,\npg user is %s,\npassword is %s\n' % (",".join(env.hosts), superuser, superuser_passwd)
-    print '--------------------------------------\nstart way:\nfab -f db_pg.py start'
-    print '--------------------------------------\nstart cli:'
-    print pg_home + '/bin/psql -U ' + superuser + ' -d postgres\n--------------------------------------'
+    print '--------------------------------------\nfinish install pg\n--------------------------------------'
+
+    print 'host is %s,\npg user is %s,\npassword is %s' % (",".join(env.hosts), superuser, superuser_passwd)
+    print '--------------------------------------'
+
+    print 'start way:(must use user ==> %s)\n%s/bin/pg_ctl -D %s start' % (env.user, pg_home, data_path)
+    print '--------------------------------------'
+
+    print 'start cli:\n%s/bin/psql -U %s -d postgres' % (pg_home, superuser)
+    print '--------------------------------------'
 
 
 def start():
     with settings(warn_only=True):
         with cd(pg_home):
-            run('bin/pg_ctl -D ' + data_path + ' start')
+            run('bin/pg_ctl -D %s start' % data_path)
 
 
 def stop():
