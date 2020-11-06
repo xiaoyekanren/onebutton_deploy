@@ -3,7 +3,6 @@ import fabfile
 from fabric.api import *
 from os import path
 from time import strftime
-from sys import argv
 
 #
 upload_folder = path.join('/tmp', strftime("%Y%m%d") + '_zzm').replace('\\', '/')

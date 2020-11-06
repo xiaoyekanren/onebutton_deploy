@@ -1,7 +1,7 @@
 # coding=UTF-8
 import fabfile
-import os
 from fabric.api import *
+import os
 
 # 读取fabfile文件的cf参数,读取passwd.ini文件
 cf = fabfile.cf

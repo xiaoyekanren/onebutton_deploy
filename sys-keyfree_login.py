@@ -1,7 +1,6 @@
 # coding=UTF-8
-from configparser import ConfigParser
-from fabric.api import env, run, settings
 import fabfile
+from fabric.api import *
 from os import system
 
 

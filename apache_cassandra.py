@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # encoding: utf-8
-from fabric.api import *
 import fabfile
+from fabric.api import *
 import os
 
 # 读取fabfile文件的cf参数,读取passwd.ini文件

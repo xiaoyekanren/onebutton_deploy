@@ -1,9 +1,9 @@
 # coding=UTF-8
 import fabfile
+from fabric.api import *
 import os
 import time
 import fileinput
-from fabric.api import *
 
 # 读取fabfile文件的cf参数,读取passwd.ini文件
 cf = fabfile.cf

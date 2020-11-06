@@ -1,6 +1,6 @@
 # coding=UTF-8
-from fabric.api import *
 import fabfile
+from fabric.api import *
 import os
 
 

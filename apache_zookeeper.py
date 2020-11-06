@@ -1,8 +1,12 @@
 # coding=UTF-8
 import fabfile
-import os
 from fabric.api import *
+from os import path
+from time import strftime
 
+#
+upload_folder = path.join('/tmp', strftime("%Y%m%d") + '_zzm').replace('\\', '/')
+upload_file = path.join(upload_folder, 'zookeeper.tar.gz').replace('\\', '/')
 # 读取fabfile文件的cf参数
 cf = fabfile.cf
 # 定义env
@@ -15,10 +19,11 @@ sudouser_passwd = cf.get('zookeeper', 'sudouser_passwd')
 # 定义软件参数
 zookeeper_local_file = cf.get('zookeeper', 'zookeeper_local_file')
 zookeeper_folder = cf.get('zookeeper', 'zookeeper_folder')
+install_path = cf.get('zookeeper', 'install_path')
 # 需要拼接的字符串
-zookeeper_upload_file_path = os.path.join('/home', env.user, 'zookeeper.tar.gz').replace('\\', '/')
-zookeeper_home = os.path.join('/home', env.user, zookeeper_folder).replace('\\', '/')
-zookeeper_config_folder = os.path.join(zookeeper_home, 'conf').replace('\\', '/')
+zookeeper_upload_file_path = path.join('/home', env.user, 'zookeeper.tar.gz').replace('\\', '/')
+zookeeper_home = path.join(install_path, zookeeper_folder).replace('\\', '/')
+zookeeper_config_folder = path.join(zookeeper_home, 'conf').replace('\\', '/')
 # 依赖
 dataDir = cf.get('zookeeper', 'dataDir')
 dataLogDir = cf.get('zookeeper', 'dataLogDir')
@@ -31,9 +36,10 @@ def install():
         print ("can't install by root")
         exit()
     # 上传
-    put(zookeeper_local_file, zookeeper_upload_file_path)
-    # 解压&删除
-    run('tar -zxvf zookeeper.tar.gz && rm -f zookeeper.tar.gz')
+    run('mkdir -p  %s' % upload_folder)
+    put(zookeeper_local_file, upload_file)
+    # 解压
+    run('tar -zxvf %s -C%s' % (upload_file, install_path))  # 解压
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建zookeeper相关文件夹并授权给zookeeper所属用户
         sudo('mkdir -p ' + dataDir)
         sudo('chown -R ' + env.user + ':' + env.user + ' ' + dataDir)
