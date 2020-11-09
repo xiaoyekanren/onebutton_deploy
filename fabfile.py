@@ -26,6 +26,10 @@ cf.read('config.ini')
 
 
 def get_common_var(section):
+    """
+    :param section:
+    :return:
+    """
     env.user = cf.get(section, 'localuser')
     env.password = cf.get(section, 'localuser_passwd')
     env.hosts = cf.get(section, 'hosts').split(',')
