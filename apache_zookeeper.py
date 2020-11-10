@@ -5,7 +5,7 @@ from fabric.api import *
 section = 'zookeeper'  # 指定config.ini的section名称
 cf = fabfile.cf  # 读取fabfile文件的cf参数
 # config.ini指定的通用参数
-env.hosts, env.user, env.password, sudouser, sudouser_passwd, local_file, software_folder, install_path = fabfile.get_common_var(section)
+env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)
 software_home = fabfile.get_software_home(section)
 # config.ini指定的软件配置
 dataDir = cf.get('zookeeper', 'dataDir')
@@ -21,7 +21,7 @@ def install():
     # 上传
     upload_file = fabfile.upload(section)
     # 解压
-    fabfile.decompress(section, upload_file)
+    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压到install_path(在函数decompress里面定义),无返回值
     # 正式开始安装
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建zookeeper相关文件夹并授权给zookeeper所属用户
         sudo('mkdir -p ' + dataDir)

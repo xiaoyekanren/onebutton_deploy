@@ -3,58 +3,34 @@ import fabfile
 from fabric.api import *
 import os
 
-
-# 读取fabfile文件的cf参数,读取passwd.ini文件
-cf = fabfile.cf
-# 定义env
-env.user = cf.get('jdk', 'localuser')
-env.password = cf.get('jdk', 'localuser_passwd')
-env.hosts = cf.get('jdk', 'hosts').split(',')
-# 定义sudo用户参数
-sudouser = cf.get('jdk', 'sudouser')
-sudouser_passwd = cf.get('jdk', 'sudouser_passwd')
-# 定义软件参数
-jdk_local_file = cf.get('jdk', 'jdk_local_file')
-jdk_folder = cf.get('jdk', 'jdk_folder')  # 即解压之后的文件夹名称
-# 需要拼接的字符串
-user_home = cf.get('jdk', 'user_home')
-jdk_upload_file_path = os.path.join(user_home, 'jdk.tar.gz').replace('\\', '/')  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
-java_home = os.path.join(user_home, jdk_folder).replace('\\', '/')  # JAVA_HOME  # Windows's os.path.join会出现反斜杠，用replace将反斜杠替换成斜杠
-java_home_global = '/usr/local/' + jdk_folder  # 全局的JAVA_HOME
+section = 'jdk'  # 指定config.ini的section名称
+cf = fabfile.cf  # 读取fabfile文件的cf参数
+# config.ini指定的通用参数
+env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)
+software_home = fabfile.get_software_home(section)
+# config.ini指定的软件配置
+install_for = cf.get(section, 'install_for')
+# 需定义的参数
+java_home = software_home
+if install_for == 'alone':
+    pathfile = '~/.bashrc'
+elif install_for == 'public':
+    pathfile = '/etc/profile'
+else:
+    print ("'install_for' can only be 'alone' or 'public' ")
+    exit()
 
 
-# local
 def install():
+    # 检查是否是root用户，是就退出
+    fabfile.check_user(env.user)
     # 上传
-    put(jdk_local_file, jdk_upload_file_path)
-    # 解压&删除
-    run('tar -zxvf jdk.tar.gz && rm -f jdk.tar.gz')
-    # 写入
-    run('echo "">> ~/.bashrc')  # 输出空行
-    run('echo "">> ~/.bashrc')  # 输出空行
-    run('echo "export JAVA_HOME=' + java_home + '" >> ~/.bashrc')  # JAVA_HOME
-    run('echo "export JRE_HOME=' + java_home + '/jre" >> ~/.bashrc')  # JRE_HOME
-    run("echo 'export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH' >>~/.bashrc")  # CLASSPATH  # 输出$环境变量必须用单引号
-    run("echo 'export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH' >>~/.bashrc")  # PATH  # 输出$环境变量必须用单引号
-    run('source ~/.bashrc')  # 立刻生效
-
-
-# global
-def install_global():
-    # 上传
-    put(jdk_local_file, jdk_upload_file_path)
-    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户
-        # 移动文件夹
-        sudo('mv ' + jdk_upload_file_path + ' /usr/local/')
-        with cd('/usr/local'):  # 进入该目录
-            # 解压&删除
-            sudo('tar -zxvf jdk.tar.gz && rm -f jdk.tar.gz')
-        # 写入
-        sudo('echo "">> /etc/profile')  # 输出空行
-        sudo('echo "">> /etc/profile')  # 输出空行
-        sudo('echo "export JAVA_HOME=' + java_home_global + '" >> /etc/profile')  # JAVA_HOME
-        sudo('echo "export JRE_HOME=' + java_home_global + '/jre" >> /etc/profile')  # JRE_HOME
-        sudo("echo 'export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH' >>/etc/profile")  # CLASSPATH
-        sudo("echo 'export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH' >>/etc/profile")  # PATH  # 输出$环境变量必须用单引号
-        sudo('source /etc/profile')  # 立刻生效  # 输出$环境变量必须用单引号
-        print('jdk already install at ' + java_home_global)
+    upload_file = fabfile.upload(section)  # 返回upload_file
+    # 解压
+    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压到install_path(在函数decompress里面定义),无返回值
+    # 正式开始安装
+    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo修改,该文件必然存在，无需修改权限
+        sudo('sed -i \'2a\export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH\' %s' % pathfile)  # PATH
+        sudo('sed -i \'2a\export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH\' %s' % pathfile)  # CLASSPATH
+        sudo('sed -i \'2a\export JRE_HOME=%s/jre\' %s' % (java_home, pathfile))  # JRE_HOME
+        sudo('sed -i \'2a\export JAVA_HOME=%s\' %s' % (java_home, pathfile))  # JAVA_HOME

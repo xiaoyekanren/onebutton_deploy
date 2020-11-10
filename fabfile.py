@@ -28,26 +28,26 @@ cf.read('config.ini')
 def get_common_var(section):
     """
     :param section:
-    :return:
+    :return:env.hosts, env.user, env.password, sudouser, sudouser_passwd
     """
     env.user = cf.get(section, 'localuser')
     env.password = cf.get(section, 'localuser_passwd')
     env.hosts = cf.get(section, 'hosts').split(',')
     sudouser = cf.get(section, 'sudouser')
     sudouser_passwd = cf.get(section, 'sudouser_passwd')
-    try:
-        local_file = cf.get(section, 'local_file')
-    except:
-        local_file = ''
-    try:
-        software_folder = cf.get(section, 'software_folder')  # 获取压缩包解压后的名称
-    except:
-        software_folder = ''
-    try:
-        install_path = cf.get(section, 'install_path')  # 获取安装路径
-    except:
-        install_path = ''
-    return env.hosts, env.user, env.password, sudouser, sudouser_passwd, local_file, software_folder, install_path
+    # try:
+    #     local_file = cf.get(section, 'local_file')
+    # except:
+    #     local_file = ''
+    # try:
+    #     software_folder = cf.get(section, 'software_folder')  # 获取压缩包解压后的名称
+    # except:
+    #     software_folder = ''
+    # try:
+    #     install_path = cf.get(section, 'install_path')  # 获取安装路径
+    # except:
+    #     install_path = ''
+    return env.hosts, env.user, env.password, sudouser, sudouser_passwd
 
 
 def check_user(user):
@@ -57,6 +57,10 @@ def check_user(user):
 
 
 def upload(section):  # 上传，返回上传文件的path
+    """
+    :param section:
+    :return:upload_file
+    """
     upload_folder = os.path.join('/tmp', strftime("%Y%m%d") + '_zzm').replace('\\', '/')  # 定义上传文件夹
     run('mkdir -p %s' % upload_folder)  # 创建上传文件夹
     upload_file = os.path.join(upload_folder, section + '.tar.gz').replace('\\', '/')  # 定义上传文件，file_path+file_name
@@ -66,12 +70,19 @@ def upload(section):  # 上传，返回上传文件的path
 
 
 def get_software_home(section):  # 获得软件的安装路径
+    """
+    :param section:
+    :return:software_home
+    """
     install_path = cf.get(section, 'install_path')  # 获取安装路径
     software_folder = cf.get(section, 'software_folder')  # 获取压缩包解压后的名称
     software_home = os.path.join(install_path, software_folder).replace('\\', '/')  # 拼出软件的路径
     return software_home
 
 
-def decompress(section, upload_file):  # 只是用于tar.gz或者tgz的压缩包，其他格式的压缩包不能用，需要后面增加判断
+def decompress(section, upload_file, software_home, user, sudouser, sudouser_passwd):  # 只是用于tar.gz或者tgz的压缩包，其他格式的压缩包不能用，需要后面增加判断
     install_path = cf.get(section, 'install_path')  # 获取安装路径
-    run('tar -zxf %s -C%s' % (upload_file, install_path))  # 解压
+    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建zookeeper相关文件夹并授权给zookeeper所属用户
+        sudo('mkdir -p %s' % install_path)  # 避免没有该路径，先mkdir一下
+        sudo('tar -zxf %s -C%s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
+        sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
