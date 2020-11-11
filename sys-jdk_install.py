@@ -44,6 +44,6 @@ def install():
     print 'JAVA_HOME is \'%s\' and the system path have been written' % software_home
     print '--------------------------------------'
 
-    print '如果你想在root用户或者使用sudo命令来执行jdk的命令,\n在当前shell下执行\'sudo source /etc/profile\''
-    print '或者修改/root/.bashrc,增加以下行\'source /etc/profile\''
+    print 'If you want to use JDK from root or use sudo,\nyou should execute\'sudo source /etc/profile\' in current shell'
+    print 'or add a line to /root/.bashrc, \'source /etc/profile\''
     print '--------------------------------------'

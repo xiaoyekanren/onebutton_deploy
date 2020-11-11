@@ -55,3 +55,6 @@ def test6():
     except:
         aaa = ''
         print aaa
+
+def test7():
+    print '我草泥马'
