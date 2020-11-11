@@ -30,23 +30,33 @@ def get_common_var(section):
     :param section:
     :return:env.hosts, env.user, env.password, sudouser, sudouser_passwd
     """
-    env.user = cf.get(section, 'localuser')
-    env.password = cf.get(section, 'localuser_passwd')
-    env.hosts = cf.get(section, 'hosts').split(',')
-    sudouser = cf.get(section, 'sudouser')
-    sudouser_passwd = cf.get(section, 'sudouser_passwd')
-    # try:
-    #     local_file = cf.get(section, 'local_file')
-    # except:
-    #     local_file = ''
-    # try:
-    #     software_folder = cf.get(section, 'software_folder')  # 获取压缩包解压后的名称
-    # except:
-    #     software_folder = ''
-    # try:
-    #     install_path = cf.get(section, 'install_path')  # 获取安装路径
-    # except:
-    #     install_path = ''
+    try:
+        env.user = cf.get(section, 'localuser')
+    except:
+        print 'you must specify localuser at config.ini'
+        exit()
+
+    try:
+        env.password = cf.get(section, 'localuser_passwd')
+    except:
+        print 'you must specify localuser_passwd at config.ini'
+        exit()
+
+    try:
+        env.hosts = cf.get(section, 'hosts').split(',')
+    except:
+        print 'you must specify hosts in config.ini'
+        exit()
+
+    try:
+        sudouser = cf.get(section, 'sudouser')
+    except:
+        sudouser = ''
+
+    try:
+        sudouser_passwd = cf.get(section, 'sudouser_passwd')
+    except:
+        sudouser_passwd = ''
     return env.hosts, env.user, env.password, sudouser, sudouser_passwd
 
 
