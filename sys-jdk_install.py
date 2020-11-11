@@ -34,3 +34,16 @@ def install():
         sudo('sed -i \'2a\export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH\' %s' % pathfile)  # CLASSPATH
         sudo('sed -i \'2a\export JRE_HOME=%s/jre\' %s' % (java_home, pathfile))  # JRE_HOME
         sudo('sed -i \'2a\export JAVA_HOME=%s\' %s' % (java_home, pathfile))  # JAVA_HOME
+    # 输出注意事项：
+    # 输出结果,输出host类型是list必须带",".join(),否则会显示[u]
+    print '--------------------------------------\nfinish install jdk\n--------------------------------------'
+
+    print 'already install for %s' % env.user
+    print '--------------------------------------'
+
+    print 'JAVA_HOME is \'%s\' and the system path have been written' % software_home
+    print '--------------------------------------'
+
+    print '如果你想在root用户或者使用sudo命令来执行jdk的命令,\n在当前shell下执行\'sudo source /etc/profile\''
+    print '或者修改/root/.bashrc,增加以下行\'source /etc/profile\''
+    print '--------------------------------------'
