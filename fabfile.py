@@ -96,3 +96,9 @@ def decompress(section, upload_file, software_home, user, sudouser, sudouser_pas
         sudo('mkdir -p %s' % install_path)  # 避免没有该路径，先mkdir一下
         sudo('tar -zxf %s -C%s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
+
+
+def mkdir(path_, user, sudouser, sudouser_passwd):
+    with settings(user=sudouser, passwd=sudouser_passwd):
+        sudo('mkdir -p %s' % path_)
+        sudo('chown -R %s:%s %s' % (user, user, path_))

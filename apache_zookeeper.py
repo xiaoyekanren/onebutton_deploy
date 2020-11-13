@@ -23,11 +23,8 @@ def install():
     # 解压
     fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压到install_path(在函数decompress里面定义),无返回值
     # 正式开始安装
-    with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建zookeeper相关文件夹并授权给zookeeper所属用户
-        sudo('mkdir -p ' + dataDir)
-        sudo('chown -R ' + env.user + ':' + env.user + ' ' + dataDir)
-        sudo('mkdir -p ' + dataLogDir)
-        sudo('chown -R ' + env.user + ':' + env.user + ' ' + dataLogDir)
+    fabfile.mkdir(dataDir, env.user, sudouser, sudouser_passwd)  # 创建文件夹dataDir
+    fabfile.mkdir(dataLogDir, env.user, sudouser, sudouser_passwd)  # 创建文件夹dataLogDir
     with cd(software_home + '/conf'):  # 进入配置文件目录
         run('touch zoo.cfg')
         run('echo "tickTime=2000" >> zoo.cfg')
