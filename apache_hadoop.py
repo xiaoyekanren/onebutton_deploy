@@ -234,10 +234,10 @@ def install():
         # run("sed -i '$i\<value>4</value>' yarn-site.xml")
         # run("sed -i '$i\</property>' yarn-site.xml")
         #
-        # run("sed -i '$i\<property>' yarn-site.xml")
-        # run("sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
-        # run("sed -i '$i\<value>4</value>' yarn-site.xml")
-        # run("sed -i '$i\</property>' yarn-site.xml")
+        run("sed -i '$i\<property>' yarn-site.xml")
+        run("sed -i '$i\<name>yarn.resourcemanager.am.max-attempts</name>' yarn-site.xml")  # MapReduce application master在集群中的最大尝试次数
+        run("sed -i '$i\<value>4</value>' yarn-site.xml")
+        run("sed -i '$i\</property>' yarn-site.xml")
 
         if env.host == master_ip:  # 格式化namenode，只格式化master节点
             with cd(hadoop_home):
