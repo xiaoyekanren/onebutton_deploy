@@ -3,6 +3,8 @@
 ## python==2.7
 ## python依赖
 > * fabric==1.14.1
+> * paramiko
+> * configparser
 ## 部署说明
 ### 可部署软件
 > * cassandra==3.0.18
@@ -33,10 +35,6 @@ fab -f sys-jdk_install.py install
 ```
 就可以了
 ## 注意
-### 1、完整命令：
-```python 
- pyinstaller -F batch_keyfreelogin_along.py
-```
 # fab 隐藏输出
 ```shell script
 fab -f test_fabric.py start --hide status,running,stdout,user,aborts,warnings,stderr
