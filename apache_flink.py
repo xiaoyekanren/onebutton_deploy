@@ -1,56 +1,38 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-import os
 
-# 读取fabfile文件的cf参数
-cf = fabfile.cf
-# 定义env
-env.user = cf.get('flink', 'localuser')
-env.password = cf.get('flink', 'localuser_passwd')
-env.hosts = cf.get('flink', 'hosts').split(',')
-# 定义sudo用户参数
-sudouser = cf.get('flink', 'sudouser')
-sudouser_passwd = cf.get('flink', 'sudouser_passwd')
-# 定义软件参数
-flink_local_file = cf.get('flink', 'flink_local_file')
-flink_folder = cf.get('flink', 'flink_folder')
-# 需要拼接的字符串
-flink_upload_file_path = os.path.join('/home', env.user, 'flink.tar.gz').replace('\\', '/')
-flink_home = os.path.join('/home', env.user, flink_folder).replace('\\', '/')
-flink_config_folder = os.path.join(flink_home, 'conf').replace('\\', '/')
-# 依赖
+section = 'flink'  # 指定config.ini的section名称
+cf = fabfile.cf  # 读取fabfile文件的cf参数
+# config.ini指定的通用参数
+env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)  # 取得主机列表、用户&密码、sudo用户&密码
+software_home = fabfile.get_software_home(section)  # 通过section或者软件home
+# config.ini指定的软件配置
 master_ip = cf.get('flink', 'master_ip')
 slaves_ip = cf.get('flink', 'slaves_ip').split(',')
 java_home = cf.get('flink', 'java_home')
 
 
 # 安装
-# 最简单的安装，单master
-# 后期可根据需要增加on yarn;zookeeper高可用;log写hdfs;等配置参数
 def install():
-    if env.user == 'root':
-        print ("can't install by root")
-        exit()
-    # 上传
-    put(flink_local_file, flink_upload_file_path)
-    # 解压&删除
-    run('tar -zxvf flink.tar.gz && rm -f flink.tar.gz')
-    # 开始配置flink
-    with cd(flink_config_folder):
+    fabfile.check_user(env.user)  # 检查是否是root用户，是就退出
+    upload_file = fabfile.upload(section)  # 上传
+    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压,无返回值
+    # 正式开始安装
+    with cd(software_home + '/conf'):
         run('cat /dev/null > masters')
         run('cat /dev/null > slaves')
-        run('sed -i "s/jobmanager.rpc.address: localhost/' + 'jobmanager.rpc.address: ' + master_ip + '/g" flink-conf.yaml')  # flink-conf.yaml
+        run('sed -i "s/jobmanager.rpc.address: localhost/' + 'jobmanager.rpc.address: %s/g" flink-conf.yaml' % master_ip)  # flink-conf.yaml
         for slave in slaves_ip:
-            run('echo ' + slave + '>> slaves')
-        run('echo "' + master_ip + ':8081" > masters')
-        run('echo "env.java.home: ' + java_home + '" >> flink-conf.yaml')
+            run('echo %s>> slaves' % slave)
+        run('echo "%s:8081" > masters' % master_ip)
+        run('echo "env.java.home: %s" >> flink-conf.yaml' % java_home)
 
 
 # start
 def start():
     if env.host == master_ip:
-        with cd(flink_home):
+        with cd(software_home):
             with settings(prompts={
                 'Are you sure you want to continue connecting (yes/no)? ': 'yes'
             }):
@@ -60,5 +42,5 @@ def start():
 # stop
 def stop():
     if env.host == master_ip:
-        with cd(flink_home):
+        with cd(software_home):
             run('sbin/stop-cluster.sh')

@@ -1,67 +1,52 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-import os
 
-# 读取fabfile文件的cf参数
-cf = fabfile.cf
-# 定义env
-env.user = cf.get('kafka', 'localuser')
-env.password = cf.get('kafka', 'localuser_passwd')
-env.hosts = cf.get('kafka', 'hosts').split(',')
-# 定义sudo用户参数
-sudouser = cf.get('kafka', 'sudouser')
-sudouser_passwd = cf.get('kafka', 'sudouser_passwd')
-# 定义软件参数
-kafka_local_file = cf.get('kafka', 'kafka_local_file')
-kafka_folder = cf.get('kafka', 'kafka_folder')
+section = 'kafka'  # 指定config.ini的section名称
+cf = fabfile.cf  # 读取fabfile文件的cf参数
+# config.ini指定的通用参数
+env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)  # 取得主机列表、用户&密码、sudo用户&密码
+software_home = fabfile.get_software_home(section)  # 通过section或者软件home
+# config.ini指定的软件配置
 log_dirs = cf.get('kafka', 'log_dirs')
 zookeeper_hosts = cf.get('kafka', 'zookeeper_hosts').split(',')
-# 需要拼接的字符串
-kafka_upload_file_path = os.path.join('/home', env.user, 'kafka.tgz').replace('\\', '/')
-kafka_home = os.path.join('/home', env.user, kafka_folder).replace('\\', '/')
-kafka_config_folder = os.path.join(kafka_home, 'config').replace('\\', '/')
-# config
 brokerid = 0
 
 
 # 安装
 def install():
-    if env.user == 'root':
-        print ("can't install by root")
-        exit()
-    # 上传
-    put(kafka_local_file, kafka_upload_file_path)
-    # 解压&删除
-    run('tar -zxvf kafka.tgz && rm -f kafka.tgz')
+    fabfile.check_user(env.user)  # 检查是否是root用户，是就退出
+    upload_file = fabfile.upload(section)  # 上传
+    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压,无返回值
+    # 正式开始安装
     # 使用sudo用户，创建目录并授权给kafka所属用户
     with settings(user=sudouser, password=sudouser_passwd):
         for log in log_dirs.split(','):
-            sudo('mkdir -p ' + log)
-            sudo('chown -R ' + env.user + ':' + env.user + ' ' + log)
+            sudo('mkdir -p %s' % log)
+            sudo('chown -R %s:%s %s' % (env.user, env.user, log))
     # 开始配置kafka
-    with cd(kafka_config_folder):
+    with cd(software_home + '/config'):
         # server.properties
         global brokerid
-        run('sed -i "s:broker.id=0:broker.id=' + bytes(brokerid) + ':" server.properties')  # broker.id
+        run('sed -i "s:broker.id=0:broker.id=%s:" server.properties' % bytes(brokerid))  # broker.id
         brokerid += 1
-        #
+        # 开始拼zookeeper的hosts
         i = 0
         g = ''
         while i < len(zookeeper_hosts) - 1:  # zookeeper.connect
             g = g + bytes(zookeeper_hosts[i]) + ':2181' + ','
             i += 1
         g = g + bytes(zookeeper_hosts[i])
-        run('sed -i "s/localhost:2181/' + g + '/g" server.properties')
+        run('sed -i "s/localhost:2181/%s/g" server.properties' % g)
         #
-        run('sed -i "s:/tmp/kafka-logs:' + log_dirs + ':g" server.properties')  # log_dirs
+        run('sed -i "s:/tmp/kafka-logs:%s:g" server.properties' % log_dirs)  # log_dirs
         run('echo "" >> server.properties')  # 输出空行
-        run('echo "listeners=PLAINTEXT://' + env.host + ':9092" >> server.properties')  # listeners
+        run('echo "listeners=PLAINTEXT://%s:9092" >> server.properties' % env.host)  # listeners
 
 
 # 启动
 def start():
-    with cd(kafka_home + '/bin'):
+    with cd(software_home + '/bin'):
         run('rm -f nohup.out')
         run('rm -f start.sh')
         run('touch start.sh')
@@ -73,11 +58,6 @@ def start():
 
 # 停止
 def stop():
-    kafka_path = os.path.join('/home/', env.user, cf.get('kafka', 'kafka_folder')).replace('\\', '/')
-    with cd(kafka_path + '/bin'):
+    with cd(software_home + '/bin'):
         run('./kafka-server-stop.sh')
     # fab -w可以跳过失败的
-
-
-def test():
-    print 'Start Test~~~~~~~~'

@@ -1,7 +1,6 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-import os
 
 section = 'hadoop'  # 指定config.ini的section名称
 cf = fabfile.cf  # 读取fabfile文件的cf参数
@@ -26,13 +25,13 @@ def install():
     fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压到install_path(在函数decompress里面定义),无返回值
     # 正式开始安装
     # 创建目录
-    run('mkdir -p %s /tmp' % software_home)
+    run('mkdir -p %s/tmp' % software_home)
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建文件夹并授权给hadoop所属用户
         for folder in data_folder.split(','):
             sudo('mkdir -p %s' % folder)
             sudo('chown -R %s:%s %s' % (env.user, env.user, folder))
     # 修改配置文件
-    with cd(software_home + '/etc/conf'):
+    with cd(software_home + '/etc/hadoop'):
         # hadoop-env.sh
         run('sed -i \'s:export JAVA_HOME=.*:export JAVA_HOME=%s:g\' hadoop-env.sh' % java_home)  # 修改hadoop-env.sh的jdk路径
         # slaves
@@ -139,32 +138,6 @@ def install():
         run('sed -i \'$i\<value>%s</value>\' yarn-site.xml' % master_ip)
         run('sed -i \'$i\</property>\' yarn-site.xml')
 
-        # 其实下面都是默认的....
-        run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.resourcemanager.scheduler.address</name>\' yarn-site.xml')  # The address of the scheduler interface.调度程序接口的地址。
-        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8030</value>\' yarn-site.xml')
-        run('sed -i \'$i\</property>\' yarn-site.xml')
-
-        run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.resourcemanager.resource-tracker.address</name>\' yarn-site.xml')  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
-        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8031</value>\' yarn-site.xml')
-        run('sed -i \'$i\</property>\' yarn-site.xml')
-
-        run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.resourcemanager.address</name>\' yarn-site.xml')  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
-        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8032</value>\' yarn-site.xml')
-        run('sed -i \'$i\</property>\' yarn-site.xml')
-
-        run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.resourcemanager.admin.address</name>\' yarn-site.xml')  # The address of the RM admin interface.RM管理界面的地址
-        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8033</value>\' yarn-site.xml')
-        run('sed -i \'$i\</property>\' yarn-site.xml')
-
-        run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.resourcemanager.webapp.address</name>\' yarn-site.xml')  # RM web application的地址，即yarn的web
-        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8088</value>\' yarn-site.xml')
-        run('sed -i \'$i\</property>\' yarn-site.xml')
-
         # 以下是yarn-nodemanager的配置(即slaves节点)
         run('sed -i \'$i\<property>\' yarn-site.xml')
         run('sed -i \'$i\<name>yarn.nodemanager.hostname</name>\' yarn-site.xml')  # nodemanager's hostname
@@ -187,10 +160,47 @@ def install():
         run('sed -i \'$i\</property>\' yarn-site.xml')
 
         run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>\' yarn-site.xml')  # 同上
+        run('sed -i \'$i\<value>org.apache.hadoop.mapred.ShuffleHandler</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        run('sed -i \'$i\<property>\' yarn-site.xml')
         run('sed -i \'$i\<name>yarn.log-aggregation-enable</name>\' yarn-site.xml')  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
         run('sed -i \'$i\<value>true</value>\' yarn-site.xml')
         run('sed -i \'$i\</property>\' yarn-site.xml')
 
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.nodemanager.vmem-check-enabled</name>\' yarn-site.xml')  # Whether virtual memory limits will be enforced for containers.
+        run('sed -i \'$i\<value>false</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        # 其实下面都是默认的....
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.resourcemanager.scheduler.address</name>\' yarn-site.xml')  # The address of the scheduler interface.调度程序接口的地址。
+        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8030</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.resourcemanager.address</name>\' yarn-site.xml')  # The address of the applications manager interface in the RM. resourcemanager的IP+端口
+        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8032</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.resourcemanager.resource-tracker.address</name>\' yarn-site.xml')  # 这个经实践，作用是使8088端口的web显示nodes的详细信息
+        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8031</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.resourcemanager.admin.address</name>\' yarn-site.xml')  # The address of the RM admin interface.RM管理界面的地址
+        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8033</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        run('sed -i \'$i\<property>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.resourcemanager.webapp.address</name>\' yarn-site.xml')  # RM web application的地址，即yarn的web
+        run('sed -i \'$i\<value>${yarn.resourcemanager.hostname}:8088</value>\' yarn-site.xml')
+        run('sed -i \'$i\</property>\' yarn-site.xml')
+
+        # 配置yarn可用资源
         # run('sed -i \'$i\<property>\' yarn-site.xml')
         # run('sed -i \'$i\<name>yarn.nodemanager.resource.memory-mb</name>\' yarn-site.xml')  # 当前节点yarn可用的内存总量
         # run('sed -i \'$i\<value>8192</value>\' yarn-site.xml')
