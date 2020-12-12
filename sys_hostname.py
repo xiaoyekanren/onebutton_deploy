@@ -2,28 +2,25 @@
 import fabfile
 from fabric.api import *
 
-# 读取fabfile文件的cf参数
-cf = fabfile.cf
-# 定义env
-env.user = cf.get('hostname_to_host', 'sudouser')
-env.password = cf.get('hostname_to_host', 'sudouser_passwd')
-env.hosts = cf.get('hostname_to_host', 'hosts').split(",")
-# 需要拼接的字符串
-real_hosts_sum = len(env.hosts)
-env.hostname = cf.get('hostname_to_host', 'hostname').split(",")  # split即以逗号分隔每项
-env.hostname_sum = len(env.hostname)
-# 配置
-real_hosts = cf.get('hostname_to_host', 'real_hosts').split(",")
+section = 'hostname_to_host'  # 指定config.ini的section名称
+cf = fabfile.cf  # 读取fabfile文件的cf参数
+# config.ini指定的通用参数
+env.hosts = cf.get(section, 'hosts').split(',')
+env.user = cf.get(section, 'sudouser')
+env.password = cf.get(section, 'sudouser_passwd')
+ip = cf.get(section, 'ip').split(',')
+hostname = cf.get(section, 'hostname').split(',')  # split即以逗号分隔每项
+# sum一下host数量
+hostname_sum = len(hostname)
+ip_sum = len(ip)
 
 
 # 安装
 def install():
-    # 做判断hostname是否于hosts数量相等
-    if env.hostname_sum != real_hosts_sum:
-        print('hosts and hostname must one-to-one,please check.......exit')
+    if ip_sum == hostname_sum:
+        for i in range(hostname_sum):  # 做循环，将IP和主机名写入hosts文件
+            sudo('echo "%s %s" >> /etc/hosts' % (ip[i], hostname[i]))
+    else:
+        print('ip and hostname must one-to-one,please check.......exit')  # config.ini里面的ip 和hostname 不相等
         exit()
-    # 做循环，将IP和主机名写入hosts文件
-    i = 0
-    while i < env.hostname_sum:
-        sudo('echo "' + real_hosts[i] + ' ' + env.hostname[i] + '" >> /etc/hosts')
-        i = i + 1
+

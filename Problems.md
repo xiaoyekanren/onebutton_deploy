@@ -22,6 +22,7 @@ apache_hadoop
 apache_spark  
 apache_kafka  
 apache_flink  
+sys_hostname
 # 未升级
 apache_maven  
 apache_scala  
@@ -29,4 +30,3 @@ apache_storm
 dwf_deploy  
 dwf_modify_config  
 dwf_switch_tomcat  
-sys_hostname__  
