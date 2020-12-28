@@ -165,8 +165,8 @@ def install():
         run('sed -i \'$i\</property>\' yarn-site.xml')
 
         run('sed -i \'$i\<property>\' yarn-site.xml')
-        run('sed -i \'$i\<name>yarn.log-aggregation-enable</name>\' yarn-site.xml')  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径
-        run('sed -i \'$i\<value>true</value>\' yarn-site.xml')
+        run('sed -i \'$i\<name>yarn.log-aggregation-enable</name>\' yarn-site.xml')  # 日志聚合，开启后可自动把yarn日志保存到hdfs的/tmp/logs下，通过配置yarn.nodemanager.remote-app-log-dir来修改日志路径  # 2020-12-21如果为true的话，默认会删除本地的log，这个地方建议是false，相关记录会保存到logs下面
+        run('sed -i \'$i\<value>false</value>\' yarn-site.xml')
         run('sed -i \'$i\</property>\' yarn-site.xml')
 
         run('sed -i \'$i\<property>\' yarn-site.xml')

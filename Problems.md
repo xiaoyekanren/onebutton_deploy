@@ -10,6 +10,7 @@ YARN_CONF_DIR，HADOOP_CONF_DIR或者HADOOP_CONF_PATH配置以下path
 6、kafka的brokerid，能否通过确定env.host在env.hosts的顺序来确定是几
 7、kafka拼zookeeper的方式是否可以简化？
 8、增加flink on yarn
+*9、jdk安装有问题，安装alone的时候，会将bashrc写到sudo用户下，而不是当前用户
 
 
 # 已升级
