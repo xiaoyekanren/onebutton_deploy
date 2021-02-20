@@ -10,10 +10,10 @@ env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_commo
 software_home = fabfile.get_software_home(section)
 # config.ini指定的软件配置
 # 定义软件参数
-master_ip = cf.get('spark', 'master_ip')
-master_public_ip = cf.get('spark', 'master_public_ip')
-slaves = cf.get('spark', 'slaves').split(',')
-spark_worker_dir = cf.get('spark', 'spark_worker_dir')
+master_ip = cf.get(section, 'master_ip')
+master_public_ip = cf.get(section, 'master_public_ip')
+slaves = cf.get(section, 'slaves').split(',')
+spark_worker_dir = cf.get(section, 'spark_worker_dir')
 spark_work_opts = '"-Dspark.worker.cleanup.enabled=true -Dspark.worker.cleanup.interval=1800 -Dspark.worker.cleanup.appDataTtl=3600" '
 # 依赖
 java_home = cf.get('spark', 'java_home')
