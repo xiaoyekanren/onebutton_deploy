@@ -112,7 +112,7 @@ def install_codeserver():
     # # pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
     # # 5、修改coder用户路径，放入/home/ubuntu下
 
-    code_server_file = 'Tools/code-server-3.4.1-linux-amd64.tar.gz'
+    code_server_file = '../Tools/code-server-3.4.1-linux-amd64.tar.gz'
     code_server_folder = 'code-server-3.4.1-linux-amd64'
     code_server_folder_new = 'code-server-3.4.1'
     python_release = 'Tools\ms-python-release.vsix'
