@@ -46,7 +46,7 @@ def modify():
     # 修改/home/ubuntu/startup.sh脚本，修改Tomcat_INSTALL_DIR
     run("sed -i '/^Tomcat_INSTALL_DIR/cTomcat_INSTALL_DIR=\"/opt/apache-tomcat-*\"' /home/ubuntu/startup.sh")
     # 上传tomcat新版本到根目录
-    put('../Tools/apache-tomcat-9.0.37.tar.gz', 'tomcat.tar.gz')
+    put('Tools/apache-tomcat-9.0.37.tar.gz', 'tomcat.tar.gz')
     # 解压
     run('tar -zxvf tomcat.tar.gz')
     # 删除新tomcat的webapps

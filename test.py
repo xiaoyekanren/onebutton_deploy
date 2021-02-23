@@ -1,9 +1,11 @@
 # coding=UTF-8
 import fabfile
 from fabric.api import *
-from os import path
 from time import strftime
-
+import json
+import time
+import os
+import sys
 
 # 读取fabfile文件的cf参数
 cf = fabfile.cf
@@ -45,7 +47,7 @@ def test4():
 
 
 def test5():
-    a=b=3
+    a = b = 3
     print a, b
 
 
@@ -56,5 +58,10 @@ def test6():
         aaa = ''
         print aaa
 
+
 def test7():
-    print '我草泥马'
+    pass
+
+
+if __name__ == '__main__':
+    test7()
