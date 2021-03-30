@@ -32,7 +32,6 @@ def get_common_var(section):
     :return:env.hosts, env.user, env.password, sudouser, sudouser_passwd
     """
     try:
-        print os.path.join(os.path.abspath(sys.path[0]), 'config.ini')
         env.user = cf.get(section, 'localuser')
     except:
         print 'you must specify localuser at config.ini'
@@ -101,11 +100,10 @@ def get_software_home(section):  # 获得软件的安装路径
 
 def decompress(section, upload_file, software_home, user, sudouser, sudouser_passwd):  # 只是用于tar.gz或者tgz的压缩包，其他格式的压缩包不能用，需要后面增加判断
     file_name, file_extension = check_file_extension(upload_file)
-    print file_extension
     install_path = cf.get(section, 'install_path')  # 获取安装路径
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户
         sudo('mkdir -p %s' % install_path)  # 避免没有该路径，先mkdir一下
-        if file_extension == '.gz':
+        if file_extension == '.gz' or file_extension == '.tgz':
             sudo('tar -zxf %s -C%s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         elif file_extension == '.zip':
             sudo('unzip %s -d %s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压

@@ -52,12 +52,12 @@ def install():
 
         run('sed -i \'$i\<property>\' core-site.xml')
         run(
-            'sed -i \'$i\<name>hadoop.proxyuser.%s.hosts</name>\' core-site.xml' %env.user)  # 配置访问用户的代理用户是env.user，其他程序调用hdfs的时候需要
+            'sed -i \'$i\<name>hadoop.proxyuser.%s.hosts</name>\' core-site.xml' % env.user)  # 配置访问用户的代理用户是env.user，其他程序调用hdfs的时候需要
         run('sed -i \'$i\<value>*</value>\' core-site.xml')
         run('sed -i \'$i\</property>\' core-site.xml')
 
         run('sed -i \'$i\<property>\' core-site.xml')
-        run('sed -i \'$i\<name>hadoop.proxyuser.%s.groups</name>\' core-site.xml' %env.user)  # 同上
+        run('sed -i \'$i\<name>hadoop.proxyuser.%s.groups</name>\' core-site.xml' % env.user)  # 同上
         run('sed -i \'$i\<value>*</value>\' core-site.xml')
         run('sed -i \'$i\</property>\' core-site.xml')
         # hdfs-site.xml

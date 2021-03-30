@@ -15,6 +15,7 @@ master_public_ip = cf.get(section, 'master_public_ip')
 slaves = cf.get(section, 'slaves').split(',')
 spark_worker_dir = cf.get(section, 'spark_worker_dir')
 spark_work_opts = '"-Dspark.worker.cleanup.enabled=true -Dspark.worker.cleanup.interval=1800 -Dspark.worker.cleanup.appDataTtl=3600" '
+spark_master_opts = '"-Dspark.master.rest.enabled=true"'
 # 依赖
 java_home = cf.get('spark', 'java_home')
 hadoop_home = cf.get('spark', 'hadoop_home')
@@ -54,6 +55,8 @@ def install():
         run("echo 'SPARK_WORKER_DIR=%s' >> spark-env.sh" % spark_worker_dir)
         # SPARK_WORKER_OPTS
         run("echo 'SPARK_WORKER_OPTS=%s' >> spark-env.sh" % spark_work_opts)
+        # SPARK_MASTER_OPTS
+        run("echo 'SPARK_MASTER_OPTS=%s' >> spark-env.sh" % spark_master_opts)
         # LD_LIBRARY_PATH
         if hadoop_home != '':
             run("echo 'LD_LIBRARY_PATH=%s' >> spark-env.sh" % ld_library_path)
