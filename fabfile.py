@@ -1,5 +1,5 @@
 # coding=UTF-8
-# fabfirc==1.14.1
+# fabric==1.14.1
 import os
 from time import strftime
 import sys
