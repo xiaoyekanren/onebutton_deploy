@@ -23,7 +23,7 @@ else:
 
 def install():
     # 检查是否是root用户，是就退出
-    fabfile.check_user(env.user)
+    # fabfile.check_user(env.user)  # jdk无所谓拿什么安装
     # 上传
     upload_file = fabfile.upload(section)  # 返回upload_file
     # 解压
