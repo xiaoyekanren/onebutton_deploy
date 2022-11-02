@@ -50,7 +50,10 @@ def install_global():
         # 写入
         sudo('echo "">> /etc/profile')  # 输出空行
         sudo('echo "">> /etc/profile')  # 输出空行
-        sudo('echo "export MAVEN_HOME=' + mvn_home_global + '" >> /etc/profile')  # MAVEN_HOME
+
+        sudo('sed -i \'2a\export MAVEN_HOME=%s\' %s' % (mvn_home_global, '/etc/profile'))  # MAVEN_HOME
+
+        # sudo('echo "export MAVEN_HOME=' + mvn_home_global + '" >> /etc/profile')  # MAVEN_HOME
         sudo("echo 'export PATH=$MAVEN_HOME/bin:$PATH' >>/etc/profile")  # PATH  # 输出$环境变量必须用单引号
         sudo('source /etc/profile')  # 立刻生效  # 输出$环境变量必须用单引号
         print('mvn already install at ' + mvn_home_global)
