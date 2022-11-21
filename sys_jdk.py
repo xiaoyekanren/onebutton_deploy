@@ -1,4 +1,4 @@
-# coding=UTF-8
+# coding=utf-8
 import fabfile
 from fabric.api import *
 import os
@@ -7,25 +7,26 @@ section = 'jdk'  # 指定config.ini的section名称
 cf = fabfile.cf  # 读取fabfile文件的cf参数
 # config.ini指定的通用参数
 env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)
+env.host = str(env.host)
 software_home = fabfile.get_software_home(section)
 # config.ini指定的软件配置
 install_for = cf.get(section, 'install_for')
 # 需定义的参数
 java_home = software_home
-user_home = str(sudo('cat /etc/passwd | grep \'%s\'' % env.user)).split(':')[-2]
-if install_for == 'alone':
-    if env.user == 'root':
-        pathfile = '~/.bashrc'
-    else:
-        pathfile = os.path.join(user_home, '.bashrc')
-elif install_for == 'public':
-    pathfile = '/etc/profile'
-else:
-    print ("'install_for' can only be 'alone' or 'public' ")
-    exit()
 
 
 def install():
+    user_home = str(sudo('cat /etc/passwd | grep \'%s\'' % env.user)).split(':')[-2]
+    if install_for == 'alone':
+        if env.user == 'root':
+            pathfile = '~/.bashrc'
+        else:
+            pathfile = os.path.join(user_home, '.bashrc')
+    elif install_for == 'public':
+        pathfile = '/etc/profile'
+    else:
+        print ("'install_for' can only be 'alone' or 'public' ")
+        exit()
     # 检查是否是root用户，是就退出
     # fabfile.check_user(env.user)  # jdk无所谓拿什么安装
     # 上传
