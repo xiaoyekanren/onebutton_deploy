@@ -19,4 +19,6 @@ def install():
          -i.bak \
          /etc/yum.repos.d/CentOS-*.repo")
     sudo('echo nameserver 166.111.8.28 > /etc/resolv.conf')
+    sudo('echo 101.6.15.130 mirrors.tuna.tsinghua.edu.cn >> /etc/hosts')
     sudo('yum makecache')
+    sudo('yum install lsof net-tools vim -y')
