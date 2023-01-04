@@ -108,7 +108,7 @@ def decompress(section, upload_file, software_home, user, sudouser, sudouser_pas
         elif file_extension == '.zip':
             sudo('unzip %s -d %s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         else:
-            print 'can not check file extension,please mush special zip or gz'
+            print 'can not check file extension,please mush special zip or tar.gz or tgz'
             exit()
         sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
 
