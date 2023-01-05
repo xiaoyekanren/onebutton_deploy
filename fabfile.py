@@ -34,19 +34,19 @@ def get_common_var(section):
     try:
         env.user = cf.get(section, 'localuser')
     except:
-        print 'you must specify localuser at config.ini'
+        print('you must specify localuser at config.ini')
         exit()
 
     try:
         env.password = cf.get(section, 'localuser_passwd')
     except:
-        print 'you must specify localuser_passwd at config.ini'
+        print('you must specify localuser_passwd at config.ini')
         exit()
 
     try:
         env.hosts = cf.get(section, 'hosts').split(',')
     except:
-        print 'you must specify hosts in config.ini'
+        print('you must specify hosts in config.ini')
         exit()
 
     try:
@@ -73,16 +73,21 @@ def check_file_extension(file_path):
     return file_name, file_extension
 
 
+def get_upload_path(section):
+    local_file = cf.get(section, 'local_file')
+    file_name, file_extension = check_file_extension(local_file)
+    upload_folder = os.path.join('/tmp', 'zzm_' + strftime("%Y%m%d")).replace('\\', '/')  # 定义上传文件夹
+    upload_file = os.path.join(upload_folder, file_name).replace('\\', '/')  # 定义上传文件，file_path+file_name
+    return local_file, file_name, upload_folder, upload_file
+
+
 def upload(section):  # 上传，返回上传文件的path
     """
     :param section:
     :return:upload_file
     """
-    local_file = cf.get(section, 'local_file')
-    file_name, file_extension = check_file_extension(local_file)
-    upload_folder = os.path.join('/tmp', 'zzm_' + strftime("%Y%m%d")).replace('\\', '/')  # 定义上传文件夹
+    local_file, file_name, upload_folder, upload_file = get_upload_path(section)
     run('mkdir -p %s' % upload_folder)  # 创建上传文件夹
-    upload_file = os.path.join(upload_folder, file_name).replace('\\', '/')  # 定义上传文件，file_path+file_name
     put(local_file, upload_file)  # 上传
     return upload_file  # 返回上传file_path+file_name
 
@@ -108,7 +113,7 @@ def decompress(section, upload_file, software_home, user, sudouser, sudouser_pas
         elif file_extension == '.zip':
             sudo('unzip %s -d %s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         else:
-            print 'can not check file extension,please mush special zip or tar.gz or tgz'
+            print('can not check file extension,please mush special zip or tar.gz or tgz')
             exit()
         sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
 
