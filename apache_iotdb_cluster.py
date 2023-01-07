@@ -51,7 +51,7 @@ def install():
         config_list = cf.items(section_config)
         for i in config_list:
             print('replace %s=.* to %s=%s' % (str(i[0]), str(i[0]), str(i[1])))
-            run('sed -i -e "s:^%s=.*:%s=%s:" iotdb-common.properties' % (str(i[0]), str(i[0]), str(i[1])))
+            run('sed -i -e "s:^# %s=.*:%s=%s:" iotdb-common.properties' % (str(i[0]), str(i[0]), str(i[1])))
 
 
 def start():
