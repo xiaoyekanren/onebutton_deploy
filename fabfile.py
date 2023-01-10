@@ -99,8 +99,7 @@ def get_software_home(section):  # 获得软件的安装路径
     """
     install_path = cf.get(section, 'install_path')  # 获取安装路径
     software_folder = cf.get(section, 'software_folder')  # 获取压缩包解压后的名称
-    software_home = os.path.join(install_path, software_folder).replace('\\', '/')  # 拼出软件的路径
-    return software_home
+    return os.path.join(install_path, software_folder).replace('\\', '/')  # 拼出软件的路径
 
 
 def decompress(section, upload_file, software_home, user, sudouser, sudouser_passwd):  # 只是用于tar.gz或者tgz的压缩包，其他格式的压缩包不能用，需要后面增加判断

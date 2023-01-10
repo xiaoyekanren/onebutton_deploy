@@ -7,7 +7,8 @@ from fabric.api import *
 section = 'iotdb-cluster'  # 指定config.ini的section名称
 cf = fabfile.cf  # 读取fabfile文件的cf参数
 # config.ini指定的通用参数
-env.hosts, env.user, env.password, sudouser, sudouser_passwd = fabfile.get_common_var(section)
+env.hosts, env.user, env.password, sudouser, sudo_password = fabfile.get_common_var(section)
+normal_user = env.user
 software_home = fabfile.get_software_home(section)
 # config.ini指定的软件配置
 first_confignode = cf.get(section, 'first_confignode')
@@ -23,22 +24,24 @@ def install():
     fabfile.check_user(env.user)
     # 上传
     if env.host == env.hosts[0]:
-        upload_file = fabfile.upload(section)
+        # upload_file = fabfile.upload(section)
+        local_file, file_name, upload_folder, upload_file = fabfile.get_upload_path(section)
     else:
         local_file, file_name, upload_folder, upload_file = fabfile.get_upload_path(section)
         run('mkdir -p %s' % upload_folder)  # 创建上传文件夹
         with settings(prompts={
-            "%s@%s's password: " % (env.user, env.hosts[0]): env.password
+            "%s@%s's password: " % (env.user, env.hosts[0]): env.password,
+            "Are you sure you want to continue connecting (yes/no)? ": 'yes'
         }):
             run('scp %s@%s:%s %s' % (env.user, env.hosts[0], upload_file, upload_file))
     # 解压
-    sudo('rm -rf %s' % software_home)
-    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudouser_passwd)  # 解压到install_path(在函数decompress里面定义),无返回值
-    # 正式开始安装
-    # 创建目录
-    sudo('mkdir -p %s' % software_home)
+    with settings(user=sudouser, password=sudo_password):
+        sudo('rm -rf %s' % software_home)
+        sudo('mkdir -p %s' % software_home)
+        sudo('chown -R %s:%s %s' % (normal_user, normal_user, software_home))
+    fabfile.decompress(section, upload_file, software_home, env.user, sudouser, sudo_password)  # 解压到install_path(在函数decompress里面定义),无返回值
     # 配置文件
-    with cd(os.path.join(software_home, 'conf')):
+    with cd(os.path.join(software_home, 'conf').replace('\\', '/')):
         cn_internal_port = run('cat iotdb-confignode.properties | grep -e "^cn_internal_port" | awk -F= {\'print $2\'}')
         # iotdb-confignode.properties
         run('sed -i -e "s:^cn_internal_address=.*:cn_internal_address=%s:" iotdb-confignode.properties' % env.host)  # cn_internal_address
@@ -55,8 +58,8 @@ def install():
 
 
 def start():
-    with cd(os.path.join(software_home, 'sbin')):
-        put('dependences/iotdb-start.sh', os.path.join(software_home, 'sbin'))
+    with cd(os.path.join(software_home, 'sbin').replace('\\', '/')):
+        put('dependences/iotdb-start.sh', os.path.join(software_home, 'sbin').replace('\\', '/'))
         if env.host == first_confignode:
             run('bash iotdb-start.sh confignode && sleep 5')
         if env.host != first_confignode and env.host in config_node:
@@ -66,7 +69,7 @@ def start():
 
 
 def stop():
-    with cd(os.path.join(software_home, 'sbin')):
+    with cd(os.path.join(software_home, 'sbin').replace('\\', '/')):
         if env.host in config_node:
             run('./stop-confignode.sh')
         if env.host in data_node:
