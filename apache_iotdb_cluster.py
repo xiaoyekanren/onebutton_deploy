@@ -23,11 +23,11 @@ def install():
     # 检查是否是root用户，是就退出
     fabfile.check_user(env.user)
     # 上传
+    local_file, file_name, upload_folder, upload_file = fabfile.get_upload_path(section)
     if env.host == env.hosts[0]:
-        # upload_file = fabfile.upload(section)
-        local_file, file_name, upload_folder, upload_file = fabfile.get_upload_path(section)
+        fabfile.upload(section)
+        # pass
     else:
-        local_file, file_name, upload_folder, upload_file = fabfile.get_upload_path(section)
         run('mkdir -p %s' % upload_folder)  # 创建上传文件夹
         with settings(prompts={
             "%s@%s's password: " % (env.user, env.hosts[0]): env.password,
@@ -74,3 +74,8 @@ def stop():
             run('./stop-confignode.sh')
         if env.host in data_node:
             run('./stop-datanode.sh')
+
+
+def clear():
+    with cd(software_home):
+        run('rm -rf data logs')
