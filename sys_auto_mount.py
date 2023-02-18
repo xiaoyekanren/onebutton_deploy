@@ -28,11 +28,17 @@ def install():
         }):
             run('parted %s mklabel gpt' % i)
         run('parted %s mkpart primary 2048s 100%%' % i)
-        run('mkfs.ext4 %s1' % i)
+    # get dev partition
+    mount_dev_partition = []
+    for i in mount_dev:
+        mount_dev_partition.append(run('fdisk -l|grep %s|grep -v \'Disk\'| awk \'{print $1}\'' % i))
+    # format
+    for i in mount_dev_partition:
+        run('mkfs.ext4 %s' % i)
     # write to fstab
-    for i in mount_dev:
-        blkid = run('blkid %s1 | awk \'{print $2}\' | awk -F = \'{print $2}\' |sed \'s:"::g\'' % i)
-        run('echo UUID=%s %s ext4 defaults 0 0 >> /etc/fstab' % (str(blkid), str(mount_to_path[mount_dev.index(i)])))
+    for i in mount_dev_partition:
+        blkid = run('blkid %s | awk \'{print $2}\' | awk -F = \'{print $2}\' |sed \'s:"::g\'' % i)
+        run('echo UUID=%s %s ext4 defaults 0 0 >> /etc/fstab' % (str(blkid), str(mount_to_path[mount_dev_partition.index(i)])))
     # mount
-    for i in mount_dev:
-        run('mount %s1 %s' % (i, str(mount_to_path[mount_dev.index(i)])))
+    for i in mount_dev_partition:
+        run('mount %s %s' % (i, str(mount_to_path[mount_dev_partition.index(i)])))
