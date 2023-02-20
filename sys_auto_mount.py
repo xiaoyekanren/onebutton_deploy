@@ -31,7 +31,8 @@ def install():
     # get dev partition
     mount_dev_partition = []
     for i in mount_dev:
-        mount_dev_partition.append(run('fdisk -l|grep %s|grep -v \'Disk\'| awk \'{print $1}\'' % i))
+        # mount_dev_partition.append(run('fdisk -l|grep %s|grep -v \'Disk\'| awk \'{print $1}\'' % i))
+        mount_dev_partition.append(i + run('parted /dev/sdb print | grep "Number  Start" -A1 | tail -n 1 | awk {\'print $1\'}'))
     # format
     for i in mount_dev_partition:
         run('mkfs.ext4 %s' % i)
