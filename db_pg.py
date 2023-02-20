@@ -51,13 +51,13 @@ def install():
     with settings(warn_only=True):
         run("ps -ef|grep 'postgres'|awk '{print $2}'|xargs kill -9;echo 'already killed'")  # 杀了PG
     # 输出结果,输出host类型是list必须带",".join(),否则会显示[u]
-    print '--------------------------------------\nfinish install pg\n--------------------------------------'
-    print 'host is %s,\npg user is %s,\npassword is %s' % (",".join(env.hosts), superuser, superuser_passwd)
-    print '--------------------------------------'
-    print 'start way:(must use user ==> %s)\n%s/bin/pg_ctl -D %s start' % (env.user, software_home, data_path)
-    print '--------------------------------------'
-    print 'start cli:\n%s/bin/psql -U %s -d postgres' % (software_home, superuser)
-    print '--------------------------------------'
+    print('--------------------------------------\nfinish install pg\n--------------------------------------')
+    print('host is %s,\npg user is %s,\npassword is %s' % (",".join(env.hosts), superuser, superuser_passwd))
+    print('--------------------------------------')
+    print('start way:(must use user ==> %s)\n%s/bin/pg_ctl -D %s start' % (env.user, software_home, data_path))
+    print('--------------------------------------')
+    print('start cli:\n%s/bin/psql -U %s -d postgres' % (software_home, superuser))
+    print('--------------------------------------')
 
 
 def start():
