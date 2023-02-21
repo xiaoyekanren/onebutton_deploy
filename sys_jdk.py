@@ -21,7 +21,7 @@ def install():
         if env.user == 'root':
             pathfile = '~/.bashrc'
         else:
-            pathfile = os.path.join(user_home, '.bashrc')
+            pathfile = os.path.join(user_home, '.bashrc').replace('\\','/')
     elif install_for == 'public':
         pathfile = '/etc/profile'
     else:
