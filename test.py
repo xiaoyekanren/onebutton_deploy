@@ -22,7 +22,7 @@ sudouser_passwd = cf.get('test', 'sudouser_passwd')
 # 应用于python需要取得某些值，在给其他地方去定义
 def test1():
     bbb = run("whoami", shell=False, pty=False)
-    print bbb
+    print(bbb)
 
 
 # 这个是忽略类似于模拟shell命令的一步一步执行的情况，根据提示信息，输出相对应的值
@@ -43,12 +43,12 @@ def test3():
 def test4():
     aaa = run('pwd')
 
-    print aaa[:-1]
+    print(aaa[:-1])
 
 
 def test5():
     a = b = 3
-    print a, b
+    print(a, b)
 
 
 def test6():
@@ -56,7 +56,7 @@ def test6():
         aaa = cf.get('66666', 'loc7777aluser')
     except:
         aaa = ''
-        print aaa
+        print(aaa)
 
 
 def test7():
