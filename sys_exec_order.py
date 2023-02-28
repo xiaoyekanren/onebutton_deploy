@@ -17,5 +17,5 @@ sudouser_passwd = cf.get(section, 'sudouser_passwd')
 def install():
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建文件夹并授权给hadoop所属用户
         sudo('setenforce 0')
-        sudo('sed -i ":^SELINUX=.*:SELINUX=disabled:" /etc/selinux/config')
+        sudo('sed -e "s:^SELINUX=.*:SELINUX=disabled:g" /etc/selinux/config')
      
