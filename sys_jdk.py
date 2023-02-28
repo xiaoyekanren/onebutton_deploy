@@ -1,6 +1,6 @@
 # coding=utf-8
 import fabfile
-from fabric.api import *
+from fabric.api import env, sudo
 import os
 
 section = 'jdk'  # 指定config.ini的section名称
@@ -40,14 +40,14 @@ def install():
     sudo('sed -i \'2a\export JAVA_HOME=%s\' %s' % (java_home, pathfile))  # JAVA_HOME
     # 输出注意事项：
     # 输出结果,输出host类型是list必须带",".join(),否则会显示[u]
-    print '--------------------------------------\nfinish install jdk\n--------------------------------------'
+    print('--------------------------------------\nfinish install jdk\n--------------------------------------')
 
-    print 'already install for %s' % env.user
-    print '--------------------------------------'
+    print('already install for %s' % env.user)
+    print('--------------------------------------')
 
-    print 'JAVA_HOME is \'%s\' and the system path have been written' % software_home
-    print '--------------------------------------'
+    print('JAVA_HOME is \'%s\' and the system path have been written' % software_home)
+    print('--------------------------------------')
 
-    print 'If you want to use JDK from root or use sudo,\nyou should execute\'sudo source /etc/profile\' in current shell'
-    print 'or add a line to /root/.bashrc, \'source /etc/profile\''
-    print '--------------------------------------'
+    print('If you want to use JDK from root or use sudo,\nyou should execute\'sudo source /etc/profile\' in current shell')
+    print('or add a line to /root/.bashrc, \'source /etc/profile\'')
+    print('--------------------------------------')
