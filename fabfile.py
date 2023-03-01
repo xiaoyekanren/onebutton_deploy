@@ -1,7 +1,7 @@
 # coding=UTF-8
 # fabric==1.14.1
 import os
-from time import strftime
+import time
 import sys
 
 import configparser
@@ -76,7 +76,7 @@ def check_file_extension(file_path):
 def get_upload_path(section):
     local_file = cf.get(section, 'local_file')
     file_name, file_extension = check_file_extension(local_file)
-    upload_folder = os.path.join('/tmp', 'zzm_' + strftime("%Y%m%d")).replace('\\', '/')  # 定义上传文件夹
+    upload_folder = os.path.join('/tmp', '_install' + '_%s' + '_' + str(int(time.time())) % section).replace('\\', '/')  # 定义上传文件夹
     upload_file = os.path.join(upload_folder, file_name).replace('\\', '/')  # 定义上传文件，file_path+file_name
     return local_file, file_name, upload_folder, upload_file
 
@@ -106,13 +106,14 @@ def decompress(section, upload_file, software_home, user, sudouser, sudouser_pas
     file_name, file_extension = check_file_extension(upload_file)
     install_path = cf.get(section, 'install_path')  # 获取安装路径
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户
+        sudo('rm -rf %s' % software_home)  # 避免有这个路径，先删了
         sudo('mkdir -p %s' % install_path)  # 避免没有该路径，先mkdir一下
         if file_extension == '.gz' or file_extension == '.tgz':
             sudo('tar -zxf %s -C%s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         elif file_extension == '.zip':
             sudo('unzip %s -d %s' % (upload_file, install_path))  # 为防止没有权限，使用sudo解压
         else:
-            print('can not check file extension,please mush special zip or tar.gz or tgz')
+            print('can not check file extension, please mush special zip or tar.gz or tgz')
             exit()
         sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
 
@@ -121,3 +122,35 @@ def mkdir(path_, user, sudouser, sudouser_passwd):
     with settings(user=sudouser, passwd=sudouser_passwd):
         sudo('mkdir -p %s' % path_)
         sudo('chown -R %s:%s %s' % (user, user, path_))
+
+
+def get_user_home(user, user_password):
+    with settings(user=user, passwd=user_password):
+        return str(sudo('cat /etc/passwd | grep \'%s\'' % env.user)).split(':')[-2]
+
+
+def get_path_file(section, user, user_password):
+    install_for = cf.get(section, 'install_for')
+    user_home = get_user_home(user, user_password)
+    with settings(user=user, passwd=user_password):
+        if install_for == 'alone' or not install_for:
+            pathfile = os.path.join(user_home, '.bashrc').replace('\\', '/')
+        elif install_for == 'public':
+            pathfile = '/etc/profile'
+        else:
+            print("'install_for' can only be 'alone' or 'public' or null ")
+            exit()
+    return pathfile
+
+
+def put_file(section, host, host_list, user, user_password, upload_folder, upload_file):
+    with settings(user=user, passwd=user_password):
+        if host == host_list[0]:
+            upload(section)
+        else:
+            run('mkdir -p %s' % upload_folder)  # 创建上传文件夹
+            with settings(prompts={
+                "%s@%s's password: " % (env.user, env.hosts[0]): env.password,
+                "Are you sure you want to continue connecting (yes/no)? ": 'yes'
+            }):
+                run('scp %s@%s:%s %s' % (env.user, env.hosts[0], upload_file, upload_file))
