@@ -76,7 +76,7 @@ def check_file_extension(file_path):
 def get_upload_path(section):
     local_file = cf.get(section, 'local_file')
     file_name, file_extension = check_file_extension(local_file)
-    upload_folder = os.path.join('/tmp', '_install' + '_%s' + '_' + str(int(time.time())) % section).replace('\\', '/')  # 定义上传文件夹
+    upload_folder = os.path.join('/tmp', '_install' + '_' + section + '_' + time.strftime("%Y%m%d")).replace('\\', '/')  # 定义上传文件夹
     upload_file = os.path.join(upload_folder, file_name).replace('\\', '/')  # 定义上传文件，file_path+file_name
     return local_file, file_name, upload_folder, upload_file
 
