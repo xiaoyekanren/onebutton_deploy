@@ -29,7 +29,7 @@ def install():
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建文件夹并授权给hadoop所属用户
         for folder in data_folder.split(','):
             sudo('mkdir -p %s' % folder)
-            sudo('chown -R %s:%s %s' % (env.user, env.user, folder))
+            sudo('chown -R %s:%s %s' % (env.user, fabfile.get_user_grou_id(env.user, sudouser, sudouser_passwd), folder))
     # 修改配置文件
     with cd(software_home + '/etc/hadoop'):
         # hadoop-env.sh

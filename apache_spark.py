@@ -34,7 +34,7 @@ def install():
     # 正式开始安装
     with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户，创建SPARK_WORKER_DIR文件夹并授权给spark所属用户
         sudo('mkdir -p %s' % spark_worker_dir)
-        sudo('chown -R %s:%s %s' % (env.user, env.user, spark_worker_dir))
+        sudo('chown -R %s:%s %s' % (env.user, fabfile.get_user_grou_id(env.user, sudouser, sudouser_passwd), spark_worker_dir))
 
     # 开始配置spark
     with cd(software_home + '/conf'):  # 进入配置文件目录

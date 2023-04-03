@@ -23,7 +23,7 @@ def install():
     with settings(user=sudouser, password=sudouser_passwd):
         for log in log_dirs.split(','):
             sudo('mkdir -p %s' % log)
-            sudo('chown -R %s:%s %s' % (env.user, env.user, log))
+            sudo('chown -R %s:%s %s' % (env.user, fabfile.get_user_grou_id(env.user, sudouser, sudouser_passwd), log))
     # 开始配置kafka
     with cd(software_home + '/config'):
         # server.properties

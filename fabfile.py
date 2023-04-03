@@ -115,18 +115,25 @@ def decompress(section, upload_file, software_home, user, sudouser, sudouser_pas
         else:
             print('can not check file extension, please mush special zip or tar.gz or tgz')
             exit()
-        sudo('chown -R %s:%s %s' % (user, user, software_home))  # 将文件夹权限还给env.user
+        sudo('chown -R %s:%s %s' % (user, get_user_grou_id(user, sudouser, sudouser_passwd), software_home))  # 将文件夹权限还给env.user
 
 
 def mkdir(path_, user, sudouser, sudouser_passwd):
     with settings(user=sudouser, passwd=sudouser_passwd):
         sudo('mkdir -p %s' % path_)
-        sudo('chown -R %s:%s %s' % (user, user, path_))
+        sudo('chown -R %s:%s %s' % (user, get_user_grou_id(user, sudouser, sudouser_passwd), path_))
 
 
 def get_user_home(user, user_password):
     with settings(user=user, passwd=user_password):
-        return str(sudo('cat /etc/passwd | grep \'%s\'' % env.user)).split(':')[-2]
+        user_home = str(run('cat /etc/passwd | grep \'%s\'' % user)).split(':')[-2]
+        return user_home
+
+
+def get_user_grou_id(user, sudouser, sudouser_passwd):
+    with settings(user=sudouser, passwd=sudouser_passwd):
+        user_group_id = str(run('cat /etc/passwd | grep \'%s\'' % user)).split(':')[4]  # 这个地方不太..精确，如果用户名类似就完蛋
+        return user_group_id
 
 
 def get_path_file(section, user, user_password):

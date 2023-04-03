@@ -61,7 +61,7 @@ def install_global():
 
 def modify_mirror():
     exist_mvn_home = run('echo $MAVEN_HOME')
-    print exist_mvn_home
+    print(exist_mvn_home)
     with cd(exist_mvn_home + '/conf'):
         with settings(user=sudouser, password=sudouser_passwd):  # 使用sudo用户
             line = run("cat -n settings.xml |grep '  <mirrors>'|awk {'print $1'}")
