@@ -132,7 +132,7 @@ def get_user_home(user, user_password):
 
 def get_user_grou_id(user, sudouser, sudouser_passwd):
     with settings(user=sudouser, passwd=sudouser_passwd):
-        user_group_id = str(run('cat /etc/passwd | grep \'%s\'' % user)).split(':')[4]  # 这个地方不太..精确，如果用户名类似就完蛋
+        user_group_id = str(run('cat /etc/passwd | grep \'%s\'' % user)).split(':')[3]  # 这个地方不太..精确，如果用户名类似就完蛋
         return user_group_id
 
 
