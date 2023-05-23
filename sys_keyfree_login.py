@@ -25,6 +25,8 @@ def install():
 
     if env.host == env.hosts[-1]:  # 即在最后一个主机运行的时候，此时全部主机已经生成了id_rsa，然后执行install2
         install2()
+    
+    print ('!!!Selinux must be disabled on the Centos OS, otherwise password free login will not take effect!!!')
 
 
 def install2():
