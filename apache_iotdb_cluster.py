@@ -13,7 +13,6 @@ first_confignode = cf.get(section, 'first_confignode')
 config_node = cf.get(section, 'config_node')
 data_node = cf.get(section, 'data_node')
 # 修改配置参数
-# iotdb-common.properties
 section_common_config = 'iotdb-common-config'  # iotdb-common.properties
 section_confignode_config = 'iotdb-confignode-config'  # iotdb-confignode.properties
 section_datanode_config = 'iotdb-datanode-config'  # iotdb-datanode.properties
