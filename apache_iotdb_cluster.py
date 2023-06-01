@@ -12,8 +12,11 @@ software_home = fabfile.get_software_home(section)
 first_confignode = cf.get(section, 'first_confignode')
 config_node = cf.get(section, 'config_node')
 data_node = cf.get(section, 'data_node')
+# 修改配置参数
 # iotdb-common.properties
-section_config = 'iotdb-cluster-config'
+section_common_config = 'iotdb-common-config'  # iotdb-common.properties
+section_confignode_config = 'iotdb-confignode-config'  # iotdb-confignode.properties
+section_datanode_config = 'iotdb-datanode-config'  # iotdb-datanode.properties
 
 
 # 安装
@@ -24,6 +27,28 @@ def install():
 
     # 配置文件
     with cd(os.path.join(software_home, 'conf').replace('\\', '/')):
+
+        # 可选参数
+        # iotdb-common.properties
+        common_config_list = cf.items(section_common_config)
+        if common_config_list:
+            for i in common_config_list:
+                print('replace %s=.* to %s=%s' % (str(i[0]), str(i[0]), str(i[1])))
+                run('sed -i -e "s:^# %s=.*:%s=%s:" iotdb-common.properties' % (str(i[0]), str(i[0]), str(i[1])))
+        # iotdb-confignode.properties
+        confignode_config_list = cf.items(section_confignode_config)
+        if confignode_config_list:
+            for i in confignode_config_list:
+                print('replace %s=.* to %s=%s' % (str(i[0]), str(i[0]), str(i[1])))
+                run('sed -i -e "s:^# %s=.*:%s=%s:" iotdb-confignode.properties' % (str(i[0]), str(i[0]), str(i[1])))
+        # iotdb-datanode.properties
+        datanode_config_list = cf.items(section_datanode_config)
+        if datanode_config_list:
+            for i in datanode_config_list:
+                print('replace %s=.* to %s=%s' % (str(i[0]), str(i[0]), str(i[1])))
+                run('sed -i -e "s:^# %s=.*:%s=%s:" iotdb-datanode.properties' % (str(i[0]), str(i[0]), str(i[1])))
+
+        # 必填项：
         cn_internal_port = run('cat iotdb-confignode.properties | grep -e "^cn_internal_port" | awk -F= {\'print $2\'}')
         # iotdb-confignode.properties
         run('sed -i -e "s:^cn_internal_address=.*:cn_internal_address=%s:" iotdb-confignode.properties' % env.host)  # cn_internal_address
@@ -32,11 +57,6 @@ def install():
         run('sed -i -e "s:^dn_rpc_address=.*:dn_rpc_address=%s:" iotdb-datanode.properties' % env.host)  # dn_rpc_address
         run('sed -i -e "s:^dn_internal_address=.*:dn_internal_address=%s:" iotdb-datanode.properties' % env.host)  # dn_internal_address
         run('sed -i -e "s/^dn_target_config_node_list=.*/dn_target_config_node_list=%s:%s/" iotdb-datanode.properties' % (first_confignode, cn_internal_port))  # dn_target_config_node_list
-        # iotdb-common.properties
-        config_list = cf.items(section_config)
-        for i in config_list:
-            print('replace %s=.* to %s=%s' % (str(i[0]), str(i[0]), str(i[1])))
-            run('sed -i -e "s:^# %s=.*:%s=%s:" iotdb-common.properties' % (str(i[0]), str(i[0]), str(i[1])))
 
 
 def start():
